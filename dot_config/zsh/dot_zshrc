@@ -34,8 +34,9 @@ alias ccw="gcc -Wall -Wextra -Werror"
 alias normr="norminette -R CheckForbiddenSourceHeader"
 alias conda42="conda activate 42AI-$USER"
 
-# My aliases
+# Aliases and PATH additions
 if [ $machine = "linux" ]; then
+    export EDITOR="$HOME/.local/bin/nvim.appimage"
     if [ -d "$HOME/.local/bin" ]; then
       PATH="$HOME/.local/bin:$PATH"
     fi
@@ -47,17 +48,21 @@ if [ $machine = "linux" ]; then
     alias vi="nvim.appimage"
     alias v="nvim.appimage"
 elif [ $machine = "mac" ]; then
-    if [ -d "/sgoinfre/Perso/$USER/.local/bin" ]; then
-      PATH="/sgoinfre/Perso/$USER/.local/bin:$PATH"
+    export USER_SHARE="/sgoinfre/Perso/$USER"
+    export EDITOR="$USER_SHARE/.local/bin/nvim"
+    if [ -d "$USER_SHARE/.local/bin" ]; then
+      PATH="$USER_SHARE/.local/bin:$PATH"
     fi
-    alias go='cd /sgoinfre/Perso/$USER'
+    alias go='cd $USER_SHARE'
     alias nvim="nvim"
     alias vim="nvim"
     alias vi="nvim"
     alias v="nvim"
-    cd /sgoinfre/Perso/$USER
+    cd $USER_SHARE
 fi
 
+
+### nvim config selector ###
 alias nvim-lazy="NVIM_APPNAME=lazyvim nvim"
 alias nvim-kick="NVIM_APPNAME=kickstart nvim"
 
@@ -74,6 +79,7 @@ function nvims() {
 }
 
 bindkey -s ^a "nvims\n"
+### end nvim config selector ###
 
 # Prompt
 PS1="$USER: %1~ %# "
@@ -84,7 +90,7 @@ declare -A ZINIT  # initial Zinit's hash definition, if configuring before loadi
 if [ $machine = "linux" ]; then
   ZINIT[HOME_DIR]="$HOME/.local/share/zinit"
 elif [ $machine = "mac" ]; then
-  ZINIT[HOME_DIR]="/sgoinfre/Perso/$USER/.local/share/zinit"
+  ZINIT[HOME_DIR]="$USER_SHARE/.local/share/zinit"
 fi
 
 ### Added by Zinit's installer
@@ -101,7 +107,7 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
 
-### Installing plugins
+## Installing plugins
 # Plugin history-search-multi-word loaded with investigating
 zinit load zdharma-continuum/history-search-multi-word
 
@@ -112,7 +118,7 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 # Better zsh vi mode
 zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
-
+### ZINIT END ###
 
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
