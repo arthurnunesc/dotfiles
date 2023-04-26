@@ -53,6 +53,9 @@ elif [ $machine = "mac" ]; then
     if [ -d "$USER_SHARE/.local/bin" ]; then
       PATH="$USER_SHARE/.local/bin:$PATH"
     fi
+    if [ -d "$HOME/.brew/bin" ]; then
+      PATH="$HOME/.brew/bin:$PATH"
+    fi
     alias go='cd $USER_SHARE'
     alias nvim="nvim"
     alias vim="nvim"
