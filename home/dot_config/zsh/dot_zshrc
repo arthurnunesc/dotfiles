@@ -13,14 +13,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# Checks which OS we are in and sets the machine variable accordingly
-uname_out="$(uname -s)"
-case "${uname_out}" in
-Linux*) machine=linux ;;
-Darwin*) machine=mac ;;
-*) machine="OTHER:${uname_out}" ;;
-esac
-
 ### Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -28,6 +20,14 @@ SAVEHIST=1000
 setopt beep
 bindkey -v
 ### End of lines configured by zsh-newuser-install
+
+# Checks which OS we are in and sets the machine variable accordingly
+uname_out="$(uname -s)"
+case "${uname_out}" in
+  Linux*) machine=linux ;;
+  Darwin*) machine=mac ;;
+  *) machine="OTHER:${uname_out}" ;;
+esac
 
 # 42 stuff
 alias ccw="gcc -Wall -Wextra -Werror"
@@ -57,7 +57,6 @@ elif [ $machine = "mac" ]; then
       PATH="$HOME/.brew/bin:$PATH"
     fi
     alias go='cd $USER_SHARE'
-    alias nvim="nvim"
     alias vim="nvim"
     alias vi="nvim"
     alias v="nvim"
@@ -68,7 +67,6 @@ fi
 ### nvim config selector ###
 alias nvim-lazy="NVIM_APPNAME=lazyvim nvim"
 alias nvim-kick="NVIM_APPNAME=kickstart nvim"
-
 function nvims() {
   items=("default" "kickstart" "lazyvim")
   config=$(printf "%s\n" "${items[@]}" | fzf --prompt="  select the neovim config you want  " --height=~50% --layout=reverse --border --exit-0)
@@ -80,12 +78,8 @@ function nvims() {
   fi
   NVIM_APPNAME=$config nvim $@
 }
-
 bindkey -s ^a "nvims\n"
 ### end nvim config selector ###
-
-# Prompt
-PS1="$USER: %1~ %# "
 
 
 ### ZINIT ###
