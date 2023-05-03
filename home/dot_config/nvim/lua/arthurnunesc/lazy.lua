@@ -21,7 +21,7 @@ local plugins = {
   { "williamboman/mason.nvim", build = ":MasonUpdate" },
   { "williamboman/mason-lspconfig.nvim" },
   { "mfussenegger/nvim-dap" },
-  { "jose-elias-alvarez/null-ls.nvim", dependencies = "nvim-lua/plenary.nvim" }, 
+  { "jose-elias-alvarez/null-ls.nvim", dependencies = "nvim-lua/plenary.nvim" },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   -- { "nvim-treesitter/playground", build = ":TSInstall query" },
   -- Navigation
@@ -29,7 +29,9 @@ local plugins = {
   -- Code completion/AI
   { "github/copilot.vim" },
   -- 42 stuff
-  { 'hardyrafael17/norminette42.nvim' },
+  { "arthurnunesc/42-header.vim", dependencies = "vim-syntastic/syntastic" },
+  { "arthurnunesc/42-norminette.vim" },
+  -- { 'hardyrafael17/norminette42.nvim' },
 }
 
-require("lazy").setup(plugins, opts) 
+require("lazy").setup(plugins, opts)
