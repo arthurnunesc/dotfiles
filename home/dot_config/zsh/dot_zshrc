@@ -34,6 +34,9 @@ alias ccw="gcc -Wall -Wextra -Werror"
 alias normr="norminette -R CheckForbiddenSourceHeader"
 alias conda42="conda activate 42AI-$USER"
 alias libft="make && make clean && ./libft.a && rm ./libft.a"
+alias francinette="$HOME/francinette/tester.sh"
+alias paco="$HOME/francinette/tester.sh"
+
 
 # Aliases and PATH additions
 if [ $machine = "linux" ]; then
