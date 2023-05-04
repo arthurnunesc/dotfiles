@@ -48,9 +48,7 @@ if [ $machine = "linux" ]; then
       PATH="$HOME/.cargo/bin:$PATH"
     fi
     alias nvim="nvim.appimage"
-    alias vim="nvim.appimage"
-    alias vi="nvim.appimage"
-    alias v="nvim.appimage"
+    alias nv="nvim.appimage"
 elif [ $machine = "mac" ]; then
     export USER_SHARE="/sgoinfre/Perso/$USER"
     export EDITOR="$USER_SHARE/.local/bin/nvim"
@@ -61,9 +59,7 @@ elif [ $machine = "mac" ]; then
       PATH="$HOME/.brew/bin:$PATH"
     fi
     alias go='cd $USER_SHARE'
-    alias vim="nvim"
-    alias vi="nvim"
-    alias v="nvim"
+    alias nv="nvim"
     cd $USER_SHARE
 fi
 
