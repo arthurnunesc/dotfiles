@@ -60,7 +60,6 @@ elif [ $machine = "mac" ]; then
     fi
     alias go='cd $USER_SHARE'
     alias nv="nvim"
-    cd $USER_SHARE
 fi
 
 
