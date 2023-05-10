@@ -45,8 +45,8 @@ if [ $machine = "linux" ]; then
     fi
     alias nvim="nvim.appimage"
     alias nv="nvim.appimage"
-    alias francinette="$HOME/.local/francinette/tester.sh"
-    alias paco="$HOME/.local/francinette/tester.sh"
+    alias francinette="$HOME/francinette/tester.sh"
+    alias paco="$HOME/francinette/tester.sh"
 elif [ $machine = "mac" ]; then
     export USER_SHARE="/sgoinfre/Perso/$USER"
     export EDITOR="$USER_SHARE/.local/bin/nvim"
