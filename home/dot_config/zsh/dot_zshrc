@@ -33,7 +33,7 @@ esac
 alias ccw="gcc -Wall -Wextra -Werror"
 alias normr="norminette -R CheckForbiddenSourceHeader"
 alias conda42="conda activate 42AI-$USER"
-alias libft="make -f Makefile.test && make clean && ./libft.a && rm -rf ./libft.a"
+alias libft="make -sf Makefile.test && make -sf Makefile.test clean && ./libft.a" 
 
 # Aliases and PATH additions
 if [ $machine = "linux" ]; then
