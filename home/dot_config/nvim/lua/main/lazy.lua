@@ -13,9 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
   -- Theming
-  { "https://github.com/aonemd/quietlight.vim.git" , name = "quietlight" },
   { 'rose-pine/neovim', name = 'rose-pine' },
-  { "catppuccin/nvim", name = "catppuccin" },
   -- LSP/DAP stuff
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim", build = ":MasonUpdate" },

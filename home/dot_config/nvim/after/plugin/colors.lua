@@ -8,4 +8,5 @@ rose_pine.setup({
   disable_float_background = true
 })
 
+vim.opt.termguicolors = true
 vim.cmd.colorscheme("rose-pine")
