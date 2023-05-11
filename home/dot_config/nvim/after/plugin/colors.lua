@@ -4,7 +4,7 @@ if not status then
 end
 
 rose_pine.setup({
-  disable_italics = true,
+  disable_italics = false,
   disable_float_background = true
 })
 
