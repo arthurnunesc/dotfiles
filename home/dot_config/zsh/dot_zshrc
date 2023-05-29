@@ -1,18 +1,3 @@
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/anunes-c/.local/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/anunes-c/.local/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/anunes-c/.local/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/anunes-c/.local/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
 ### Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -32,7 +17,6 @@ esac
 # 42 stuff
 alias ccw="gcc -Wall -Wextra -Werror"
 alias normr="norminette -R CheckForbiddenSourceHeader"
-alias conda42="conda activate 42AI-$USER"
 alias libft="make -sf Makefile.test && make -sf Makefile.test clean && ./libft.a; rm -rf libft.a" 
 
 # Aliases and PATH additions

@@ -1,27 +1,112 @@
+# format = """
+# $os\
+# $username\
+# $directory\
+# $git_branch\
+# $git_commit\
+# $git_state\
+# $git_metrics\
+# $git_status\
+# $character\
+# """
 format = """
-$os\
 $username\
+$hostname\
+$localip\
+$shlvl\
+$singularity\
+$kubernetes\
 $directory\
+$vcsh\
+$fossil_branch\
 $git_branch\
 $git_commit\
 $git_state\
 $git_metrics\
 $git_status\
-$character\
-"""
+$hg_branch\
+$pijul_channel\
+$docker_context\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$golang\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$swift\
+$terraform\
+$vlang\
+$vagrant\
+$zig\
+$buf\
+$nix_shell\
+$conda\
+$meson\
+$spack\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$env_var\
+$crystal\
+$custom\
+$sudo\
+$cmd_duration\
+$jobs\
+$battery\
+$time\
+$status\
+$os\
+$container\
+$shell\
+$character"""
+
+add_newline = true
 
 [username]
 show_always = true
-style_user = "bold yellow"
+style_user = "bold blue"
 format = '[$user]($style) '
 
 [os]
 disabled = true
 
-# [character]
-# success_symbol = "[>](bold green)"
-# error_symbol = "[x](bold red)"
-# vimcmd_symbol = "[<](bold green)"
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[x](bold red)"
+vimcmd_symbol = "[v](bold green)"
 
 [git_commit]
 tag_symbol = " tag "
@@ -163,7 +248,7 @@ symbol = "🪺 "
 
 [python]
 symbol = " "
-format = 'via [$symbol]($style)'
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 
 [rlang]
 symbol = "ﳒ "
