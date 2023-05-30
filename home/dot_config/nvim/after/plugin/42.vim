@@ -1,6 +1,6 @@
 """ 42 HEADER CONFIG
 let g:user42 = 'anunes-c'
-let g:mail42 = 'anunesc-@student.42barcelona.com'
+let g:mail42 = 'anunesc-@student.42barcel'
 
 
 """ 42 NORMINETTE CONFIG
