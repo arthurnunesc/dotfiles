@@ -45,8 +45,10 @@ elif [ $machine = "mac" ]; then
     alias go='cd $USER_SHARE'
     alias nv="nvim"
 	export MANPATH="/Users/anunes-c/.brew/share/man:/sgoinfre/Perso/anunes-c/.local/share/man:/usr/share/man:/Library/Apple/usr/share/man:/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/share/man:/Library/Developer/CommandLineTools/usr/share/man"
-	alias francinette="$USER_SHARE/.local/francinette/tester.sh"
-	alias paco="$USER_SHARE/.local/francinette/tester.sh"
+# 	alias francinette="$USER_SHARE/.local/francinette/tester.sh"
+# 	alias paco="$USER_SHARE/.local/francinette/tester.sh"
+    alias francinette="$HOME/francinette/tester.sh"
+    alias paco="$HOME/francinette/tester.sh"
 fi
 
 
