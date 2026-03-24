@@ -8,7 +8,6 @@ Bare git repo with `$HOME` as the work tree, so files just live in their real lo
 git clone --bare git@github.com:arthurnunesc/dotfiles.git $HOME/.dotfiles
 alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'  # also in .zshenv
 git-dotfiles checkout
-git-dotfiles config --local status.showUntrackedFiles no
 ```
 
 If checkout conflicts with existing files, back them up first:
