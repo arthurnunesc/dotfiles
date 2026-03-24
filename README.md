@@ -4,42 +4,33 @@ Managed as a bare git repo with `$HOME` as the work tree. No symlinks, no instal
 
 ## Usage
 
-Every git command uses these flags instead of an alias:
+An alias is defined in `.zshenv`:
 
 ```bash
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME
+alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 ```
 
 ### Common commands
 
 ```bash
-# Check status
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME status
-
-# Add a file
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME add ~/.config/some/file
-
-# Commit
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME commit -m "Add some config"
-
-# Push
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME push
-
-# View tracked files
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME ls-files
+git-dotfiles status
+git-dotfiles add ~/.config/some/file
+git-dotfiles commit -m "Add some config"
+git-dotfiles push
+git-dotfiles ls-files
 ```
 
 ## Setup on a new machine
 
 ```bash
 git clone --bare git@github.com:arthurnunesc/dotfiles.git $HOME/.dotfiles
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no
+git-dotfiles checkout
+git-dotfiles config --local status.showUntrackedFiles no
 ```
 
 If checkout conflicts with existing files, back them up first:
 
 ```bash
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout 2>&1 | grep "^\t" | xargs -I{} mv {} {}.bak
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout
+git-dotfiles checkout 2>&1 | grep "^\t" | xargs -I{} mv {} {}.bak
+git-dotfiles checkout
 ```
