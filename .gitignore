@@ -1,0 +1,20 @@
+# Ignore everything by default
+*
+
+# Whitelist dotfiles we want to track
+!.gitignore
+!README.md
+
+# Zsh
+!.zshenv
+!.config/
+!.config/zsh/
+!.config/zsh/.zshrc
+
+# Starship
+!.config/starship/
+!.config/starship/starship.toml
+
+# Claude Code
+!.claude/
+!.claude/**
