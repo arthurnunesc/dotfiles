@@ -6,17 +6,35 @@ Bare git repo with `$HOME` as the work tree, so files just live in their real lo
 
 ```bash
 git clone --bare git@github.com:arthurnunesc/dotfiles.git $HOME/.dotfiles
-alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'  # also in .zshenv
-git-dotfiles checkout
+alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+dotfiles checkout
 ```
 
-If checkout conflicts with existing files, back them up first:
+If checkout fails because some files already exist, it will list the conflicting files. You can see them with:
 
 ```bash
-git-dotfiles checkout 2>&1 | grep "^\t" | xargs -I{} mv {} {}.bak
-git-dotfiles checkout
+dotfiles checkout 2>&1 | grep "^\t"
 ```
 
-### Global gitignore
+Then either **overwrite** them:
 
-This repo tracks a `~/.gitignore` that ignores everything except whitelisted dotfiles. If you already have a global gitignore at `~/.gitignore`, move it to the XDG default location (`~/.config/git/ignore`) before checkout to avoid it being overwritten.
+```bash
+dotfiles checkout -f
+```
+
+Or **back them up first**, then retry:
+
+```bash
+mkdir -p $HOME/.dotfiles-backup
+dotfiles checkout 2>&1 | grep "^\t" | xargs -I{} sh -c \
+  'mkdir -p "$HOME/.dotfiles-backup/$(dirname "{}")" && mv "$HOME/{}" "$HOME/.dotfiles-backup/{}"'
+dotfiles checkout
+```
+
+Then hide untracked files from status output:
+
+```bash
+dotfiles config status.showUntrackedFiles no
+```
+
+After checkout, the `dotfiles` alias is defined in `.zshenv` and will be available in new shells.
