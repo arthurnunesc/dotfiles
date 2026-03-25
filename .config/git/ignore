@@ -1,0 +1,12 @@
+gitignore_*
+
+# MacOS shite
+.DS_Store
+
+# User configs
+USER_
+
+# Virtualenvs
+.venv
+__pycache__
+.idea

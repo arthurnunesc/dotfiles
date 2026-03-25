@@ -15,6 +15,14 @@
 !.config/starship/
 !.config/starship/starship.toml
 
+# Git
+!.config/git/
+!.config/git/ignore
+
+# Ghostty
+!.config/ghostty/
+!.config/ghostty/config.ghostty
+
 # Claude Code
 !.claude/
 !.claude/**
