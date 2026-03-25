@@ -31,10 +31,4 @@ dotfiles checkout 2>&1 | grep "^\t" | xargs -I{} sh -c \
 dotfiles checkout
 ```
 
-Then hide untracked files from status output:
-
-```bash
-dotfiles config status.showUntrackedFiles no
-```
-
 After checkout, the `dotfiles` alias is defined in `.zshenv` and will be available in new shells.
