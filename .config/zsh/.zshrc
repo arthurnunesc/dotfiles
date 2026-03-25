@@ -5,6 +5,9 @@ setopt beep
 # bindkey -v
 ### End of lines configured by zsh-newuser-install
 
+# pipenv config
+export PIPENV_VENV_IN_PROJECT=1
+export PIPENV_IGNORE_VIRTUALENVS=1
 
 # Checks which OS we are in and sets the machine variable accordingly
 uname_out="$(uname -s)"
