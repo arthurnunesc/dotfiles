@@ -5,12 +5,6 @@ setopt beep
 # bindkey -v
 ### End of lines configured by zsh-newuser-install
 
-# Android Studio emulator config
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-
-# pipenv config
-export PIPENV_VENV_IN_PROJECT=1
-export PIPENV_IGNORE_VIRTUALENVS=1
 
 # Checks which OS we are in and sets the machine variable accordingly
 uname_out="$(uname -s)"
@@ -19,6 +13,24 @@ case "${uname_out}" in
   Darwin*) machine=mac ;;
   *) machine="OTHER:${uname_out}" ;;
 esac
+
+# Android Studio config
+if [ $machine = "mac" ]; then
+  export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  export PATH=$PATH:$HOME/.maestro/bin
+fi
+
+# Node/nvm config
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# pipenv config
+export PIPENV_VENV_IN_PROJECT=1
+export PIPENV_IGNORE_VIRTUALENVS=1
 
 
 # Aliases and PATH additions
@@ -51,8 +63,3 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
 eval "$(starship init zsh)"
-
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
