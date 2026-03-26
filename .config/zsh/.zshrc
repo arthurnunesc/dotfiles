@@ -5,6 +5,9 @@ setopt beep
 # bindkey -v
 ### End of lines configured by zsh-newuser-install
 
+# Android Studio emulator config
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+
 # pipenv config
 export PIPENV_VENV_IN_PROJECT=1
 export PIPENV_IGNORE_VIRTUALENVS=1
@@ -49,3 +52,7 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
 eval "$(starship init zsh)"
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
