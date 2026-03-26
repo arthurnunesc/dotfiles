@@ -54,9 +54,10 @@ autoload -Uz _zinit
 ## End of Zinit installer chunk ##
 
 ## Installing plugins
-# Two regular plugins loaded without investigating
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
 ### ZINIT END ###
 
 
