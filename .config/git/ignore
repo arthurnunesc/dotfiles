@@ -10,5 +10,3 @@ USER_
 .venv
 __pycache__
 .idea
-
-**/.claude/settings.local.json
