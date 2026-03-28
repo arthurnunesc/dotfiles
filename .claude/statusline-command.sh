@@ -41,6 +41,9 @@ make_padding() {
 model=$(echo "$input" | jq -r '.model.display_name // "Unknown"' | tr '[:upper:]' '[:lower:]')
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
+# If no context data available (e.g. session start), omit the status bar entirely
+[ -z "$ctx_used" ] && exit 0
+
 MODEL_QUADRANT=$((CONTENT_W - LINE1_FIXED))  # 34 chars
 model_len=$(printf "%s" "$model" | wc -c | tr -d ' ')
 total_pad=$((MODEL_QUADRANT - model_len))
@@ -50,13 +53,9 @@ right_pad=$((total_pad - left_pad))
 padding_left=$(make_padding $left_pad)
 padding_right=$(make_padding $right_pad)
 
-if [ -n "$ctx_used" ]; then
-  ctx_pct=$(awk "BEGIN { printf \"%.0f\", $ctx_used }")
-  ctx_bar=$(make_bar "$ctx_used" "$ORANGE")
-  printf "${BOLD}context [%b${BOLD}] %3s%% | %s%s%s |${RESET}" "$ctx_bar" "$ctx_pct" "$padding_left" "$model" "$padding_right"
-else
-  printf "${BOLD}context [${ORANGE}%s${RESET}${BOLD}]  --%%  | %s%s%s |${RESET}" "--------------------" "$padding_left" "$model" "$padding_right"
-fi
+ctx_pct=$(awk "BEGIN { printf \"%.0f\", $ctx_used }")
+ctx_bar=$(make_bar "$ctx_used" "$ORANGE")
+printf "${BOLD}context [%b${BOLD}] %3s%% | %s%s%s |${RESET}" "$ctx_bar" "$ctx_pct" "$padding_left" "$model" "$padding_right"
 
 printf "\n"
 
