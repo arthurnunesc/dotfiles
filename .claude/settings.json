@@ -8,7 +8,8 @@
       "Bash(brew info opencode 2>/dev/null)",
       "Bash(gh api \"repos/opencode-ai/opencode/git/trees/main?recursive=1\" --jq '.tree[].path' 2>/dev/null | grep -E \"package.json|tsconfig|\\\\.ts$|\\\\.js$\" | head -20)",
       "Bash(gh search repos opencode-ai --json fullName,description --limit 10 2>/dev/null)",
-      "Bash(brew cat opencode 2>/dev/null | head -30)"
+      "Bash(brew cat opencode 2>/dev/null | head -30)",
+      "Edit(/Users/arthur/.claude/statusline-command.sh)"
     ]
   },
   "model": "opusplan",
