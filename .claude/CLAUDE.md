@@ -1,74 +1,50 @@
-### 1. Plan Node Default
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)  
-- If something goes sideways, STOP and re-plan immediately - don't keep pushing  
-- Use plan mode for verification steps, not just building  
-- Write detailed specs upfront to reduce ambiguity  
+## Core Principles
+- **Simplicity First**: Minimal changes. Find root causes, not workarounds. Senior developer standards.
+- **Autonomy on bugs**: Given a bug report, just fix it — chase logs, errors, failing CI. No hand-holding needed.
+- **Check in on features**: For new work, enter plan mode and align before building.
+- **Be concise**: Lead with the answer. Skip preamble and post-summaries.
 
 ---
 
-### 2. Subagent Strategy
-- Use subagents liberally to keep main context window clean  
-- Offload research, exploration, and parallel analysis to subagents  
-- For complex problems, throw more compute at it via subagents  
-- One task per subagent for focused execution  
-
----
-
-### 3. Self-Improvement Loop
-- After ANY correction from the user: update `tasks/lessons.md` with the pattern  
-- Write rules for yourself that prevent the same mistake  
-- Ruthlessly iterate on these lessons until mistake rate drops  
-- Review lessons at session start for relevant project  
-
----
-
-### 4. Verification Before Done
-- Never mark a task complete without proving it works  
-- Diff behavior between main and your changes when relevant  
-- Ask yourself: "Would a staff engineer approve this?"  
-- Run tests, check logs, demonstrate correctness  
-
----
-
-### 5. Demand Elegance (Balanced)
-- For non-trivial changes: pause and ask "is there a more elegant way?"  
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"  
-- Skip this for simple, obvious fixes - don't over-engineer  
-- Challenge your own work before presenting it  
-
----
-
-### 6. Autonomous Bug Fixing
-- When given a bug report: just fix it. Don't ask for hand-holding  
-- Point at logs, errors, failing tests - then resolve them  
-- Zero context switching required from the user  
-- Go fix failing CI tests without being told how  
-
----
+## Planning & Execution
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan — don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
 
 ## Task Management
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items  
-2. **Verify Plan**: Check in before starting implementation  
-3. **Track Progress**: Mark items complete as you go  
-4. **Explain Changes**: High-level summary at each step  
-5. **Document Results**: Add review section to `tasks/todo.md`  
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections  
+- Multi-session projects: Write plan to `tasks/todo.md` with checkable items. Check if present before continuing implementation.
+- Single-session work: Use built-in task system (TaskCreate/TaskUpdate)
 
 ---
 
-## Core Principles
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code  
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards
+## Subagent Strategy
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- One task per subagent for focused execution
 
-<!-- context7 -->
-Use Context7 MCP to fetch current documentation whenever the user asks about a library, framework, SDK, API, CLI tool, or cloud service -- even well-known ones like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. This includes API syntax, configuration, version migration, library-specific debugging, setup instructions, and CLI tool usage. Use even when you think you know the answer -- your training data may not reflect recent changes. Prefer this over web search for library docs.
+---
 
-Do not use for: refactoring, writing scripts from scratch, debugging business logic, code review, or general programming concepts.
+## Verification
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Run tests, check logs, demonstrate correctness
 
-## Steps
+---
 
-1. Always start with `resolve-library-id` using the library name and the user's question, unless the user provides an exact library ID in `/org/project` format
-2. Pick the best match (ID format: `/org/project`) by: exact name match, description relevance, code snippet count, source reputation (High/Medium preferred), and benchmark score (higher is better). If results don't look right, try alternate names or queries (e.g., "next.js" not "nextjs", or rephrase the question). Use version-specific IDs when the user mentions a version
-3. `query-docs` with the selected library ID and the user's full question (not single words)
+## Preferences
+- Commit automatically after each logical unit of work. Use Conventional Commits.
+- PRs: Bundled and concise, skip the fluff
+- Tests: use judgment — integration tests by default, unit tests for complex logic. Match repo's test framework.
+- Python: modern (3.10+), ruff, uv. Frontend: deliberate about framework choice per project.
+- Backend: default Python. TypeScript if <500 LOC. Deliberate if performance-critical.
+- After corrections, save a feedback memory if the lesson applies beyond this conversation.
+
+---
+
+## MCPs
+### Context7
+1. `resolve-library-id` using the library name and the user's question
+2. Pick the best match by: exact name match, description relevance, code snippet count, source reputation. Try alternate names if results don't look right.
+3. `query-docs` with the selected library ID and the user's full question
 4. Answer using the fetched docs
-<!-- context7 -->
