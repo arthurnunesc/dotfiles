@@ -41,6 +41,9 @@ export PIPENV_IGNORE_VIRTUALENVS=1
 if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+if [ -d "$HOME/.antigravity/antigravity/bin" ]; then
+    PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+fi
 if [ $machine = "mac" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
