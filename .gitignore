@@ -52,7 +52,3 @@
 !.config/opencode/skills/write-a-prd/**
 !.config/opencode/skills/write-a-skill/
 !.config/opencode/skills/write-a-skill/**
-
-# Claude Code
-!.claude/
-!.claude/**
