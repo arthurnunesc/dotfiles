@@ -23,6 +23,36 @@
 !.config/ghostty/
 !.config/ghostty/config.ghostty
 
+# OpenCode
+!.config/opencode/
+!.config/opencode/AGENTS.md
+!.config/opencode/opencode.json
+!.config/opencode/skills/
+!.config/opencode/skills/design-an-interface/
+!.config/opencode/skills/design-an-interface/**
+!.config/opencode/skills/git-guardrails-claude-code/
+!.config/opencode/skills/git-guardrails-claude-code/**
+!.config/opencode/skills/grill-me/
+!.config/opencode/skills/grill-me/**
+!.config/opencode/skills/improve-codebase-architecture/
+!.config/opencode/skills/improve-codebase-architecture/**
+!.config/opencode/skills/prd-plan-to-issues/
+!.config/opencode/skills/prd-plan-to-issues/**
+!.config/opencode/skills/prd-to-plan/
+!.config/opencode/skills/prd-to-plan/**
+!.config/opencode/skills/request-refactor-plan/
+!.config/opencode/skills/request-refactor-plan/**
+!.config/opencode/skills/tdd/
+!.config/opencode/skills/tdd/**
+!.config/opencode/skills/triage-issue/
+!.config/opencode/skills/triage-issue/**
+!.config/opencode/skills/ubiquitous-language/
+!.config/opencode/skills/ubiquitous-language/**
+!.config/opencode/skills/write-a-prd/
+!.config/opencode/skills/write-a-prd/**
+!.config/opencode/skills/write-a-skill/
+!.config/opencode/skills/write-a-skill/**
+
 # Claude Code
 !.claude/
 !.claude/**
