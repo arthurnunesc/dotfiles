@@ -23,6 +23,10 @@
 !.config/ghostty/
 !.config/ghostty/config.ghostty
 
+# GGA
+!.config/gga/
+!.config/gga/**
+
 # OpenCode
 !.config/opencode/
 !.config/opencode/**
