@@ -210,5 +210,8 @@
     "/Users/arthur/.config/opencode/plugins/engram.ts",
     "/Users/arthur/.config/opencode/plugins/notify.ts",
     "opencode-gemini-auth@latest"
+  ],
+  "instructions": [
+    "{file:./AGENTS-personal.md}"
   ]
 }
