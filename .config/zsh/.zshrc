@@ -54,6 +54,7 @@ export PATH="$PATH:/Users/arthur/.lmstudio/bin"
 
 # AI tools reminder
 alias ai='print-ai-cli-tools'
+alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias agy-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" agy "$HOME"'
 
 ### ZINIT ###
