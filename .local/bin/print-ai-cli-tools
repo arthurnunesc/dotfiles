@@ -6,7 +6,6 @@ SCRIPT_FILE="${HOME}/.local/bin/print-ai-cli-tools"
 DATA=$(cat <<'EOF'
 OpenCode|opencode|https://opencode.ai
 Codex CLI|codex|https://github.com/openai/codex
-Cursor CLI|cursor-agent|https://cursor.com
 Blackbox CLI|blackbox|https://www.blackbox.ai
 EOF
 )
