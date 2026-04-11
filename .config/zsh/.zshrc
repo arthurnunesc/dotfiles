@@ -79,6 +79,11 @@ zinit light jeffreytse/zsh-vi-mode
 ### ZINIT END ###
 
 
+# Editor config
+export EDITOR=nvim
+export VISUAL=nvim
+
+
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
 eval "$(starship init zsh)"
