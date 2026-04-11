@@ -1,0 +1,14 @@
+model_instructions_file = "/Users/arthur/.codex/engram-instructions.md"
+experimental_compact_prompt_file = "/Users/arthur/.codex/engram-compact-prompt.md"
+[projects."/Users/arthur/.dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/arthur"]
+trust_level = "trusted"
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[mcp_servers.engram]
+command = "/opt/homebrew/bin/engram"
+args = ["mcp", "--tools=agent"]

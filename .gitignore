@@ -36,3 +36,14 @@
 !.config/opencode/
 !.config/opencode/**
 .config/opencode/package-lock.json
+
+# Codex local files we do want to track
+!.codex/
+!.codex/skills/
+!.codex/skills/**
+.codex/skills/_shared
+.codex/skills/.system
+!.codex/config.toml
+!.codex/AGENTS.md
+!.codex/engram-instructions.md
+!.codex/engram-compact-prompt.md
