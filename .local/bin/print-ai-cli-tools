@@ -4,9 +4,9 @@ set -euo pipefail
 SCRIPT_FILE="${HOME}/.local/bin/print-ai-cli-tools"
 
 DATA=$(cat <<'EOF'
-OpenCode|opencode|https://opencode.ai
-Codex CLI|codex|https://github.com/openai/codex
-Blackbox CLI|blackbox|https://www.blackbox.ai
+OpenCode|opencode|Any|https://opencode.ai
+Codex CLI|codex|GPT 5.4, GPT 5.3 Codex|https://github.com/openai/codex
+Blackbox CLI|blackbox|MiniMax M2.5|https://www.blackbox.ai
 EOF
 )
 
@@ -31,15 +31,16 @@ blue=$'\033[34m'
 green=$'\033[32m'
 reset=$'\033[0m'
 
-printf "${bold}%-20s %-18s %s${reset}\n" "TOOL" "COMMAND" "DOCS"
-printf "${dim}%-20s %-18s %s${reset}\n" "--------------------" "------------------" "------------------------------"
+printf "${bold}%-20s %-18s %-28s %s${reset}\n" "TOOL" "COMMAND" "MODELS" "DOCS"
+printf "${dim}%-20s %-18s %-28s %s${reset}\n" "--------------------" "------------------" "----------------------------" "------------------------------"
 
-while IFS='|' read -r name cmd docs; do
+while IFS='|' read -r name cmd models docs; do
   [ -z "${name:-}" ] && continue
   [[ "$name" =~ ^[[:space:]]*# ]] && continue
 
-  printf "%b%-20s%b %b%-18s%b %b%s%b\n" \
+  printf "%b%-20s%b %b%-18s%b %b%-28s%b %b%s%b\n" \
     "$green" "$name" "$reset" \
     "$blue" "$cmd" "$reset" \
+    "$reset" "$models" "$reset" \
     "$dim" "$docs" "$reset"
 done <<< "$DATA"
