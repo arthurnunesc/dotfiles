@@ -10,8 +10,6 @@
 !.config/
 !.config/zsh/
 !.config/zsh/.zshrc
-!.config/dev-tools/
-!.config/dev-tools/list.txt
 
 # Local scripts
 !.local/

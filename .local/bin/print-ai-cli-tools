@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FILE="${HOME}/.config/dev-tools/list.txt"
+SCRIPT_FILE="${HOME}/.local/bin/print-ai-cli-tools"
 
-if [ ! -f "$FILE" ]; then
-  printf "\033[1;31mError:\033[0m Missing file: %s\n" "$FILE" >&2
-  exit 1
-fi
+DATA=$(cat <<'EOF'
+OpenCode|opencode|https://opencode.ai
+Codex CLI|codex|https://github.com/openai/codex
+Cursor CLI|cursor-agent|https://cursor.com
+Blackbox CLI|blackbox|https://www.blackbox.ai
+EOF
+)
 
 if [ "${1:-}" = "edit" ]; then
   if [ -n "${EDITOR:-}" ]; then
-    exec "$EDITOR" "$FILE"
+    exec "$EDITOR" "$SCRIPT_FILE"
   elif command -v nvim >/dev/null 2>&1; then
-    exec nvim "$FILE"
+    exec nvim "$SCRIPT_FILE"
   elif command -v vim >/dev/null 2>&1; then
-    exec vim "$FILE"
+    exec vim "$SCRIPT_FILE"
   elif command -v nano >/dev/null 2>&1; then
-    exec nano "$FILE"
+    exec nano "$SCRIPT_FILE"
   else
     printf "\033[1;31mError:\033[0m No editor found. Set $EDITOR.\n" >&2
     exit 1
@@ -40,4 +43,4 @@ while IFS='|' read -r name cmd docs; do
     "$green" "$name" "$reset" \
     "$blue" "$cmd" "$reset" \
     "$dim" "$docs" "$reset"
-done < "$FILE"
+done <<< "$DATA"
