@@ -35,3 +35,4 @@
 # OpenCode
 !.config/opencode/
 !.config/opencode/**
+.config/opencode/package-lock.json
