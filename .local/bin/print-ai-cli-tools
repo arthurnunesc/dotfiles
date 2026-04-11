@@ -4,9 +4,9 @@ set -euo pipefail
 SCRIPT_FILE="${HOME}/.local/bin/print-ai-cli-tools"
 
 DATA=$(cat <<'EOF'
-OpenCode|opencode|Any|https://opencode.ai
-Codex CLI|codex|GPT 5.4, GPT 5.3 Codex|https://github.com/openai/codex
-Blackbox CLI|blackbox|MiniMax M2.5|https://www.blackbox.ai
+OpenCode|opencode|Any|https://opencode.ai/docs
+Codex CLI|codex|GPT 5.4, GPT 5.3 Codex|https://developers.openai.com/codex
+Blackbox CLI|blackbox|MiniMax M2.5|https://docs.blackbox.ai
 EOF
 )
 
