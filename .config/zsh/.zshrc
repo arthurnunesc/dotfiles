@@ -54,6 +54,7 @@ export PATH="$PATH:/Users/arthur/.lmstudio/bin"
 
 # AI tools reminder
 alias ai='print-ai-cli-tools'
+alias agy-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" agy "$HOME"'
 
 ### ZINIT ###
 ## Zinit installer chunk ##
@@ -77,4 +78,3 @@ zinit light jeffreytse/zsh-vi-mode
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
 eval "$(starship init zsh)"
-
