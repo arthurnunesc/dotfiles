@@ -1,0 +1,3 @@
+OpenCode|opencode|https://opencode.ai
+Codex CLI|codex|https://github.com/openai/codex
+Blackbox CLI|blackbox|https://www.blackbox.ai

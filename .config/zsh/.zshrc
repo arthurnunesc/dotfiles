@@ -71,3 +71,10 @@ zinit light jeffreytse/zsh-vi-mode
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
 eval "$(starship init zsh)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/arthur/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# AI tools reminder
+alias ai='print-ai-cli-tools'
