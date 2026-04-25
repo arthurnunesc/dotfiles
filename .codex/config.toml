@@ -1,9 +1,15 @@
-model_instructions_file = "/Users/arthur/.codex/engram-instructions.md"
-experimental_compact_prompt_file = "/Users/arthur/.codex/engram-compact-prompt.md"
+model = "gpt-5.5"
+model_reasoning_effort = "low"
 [projects."/Users/arthur/.dotfiles"]
 trust_level = "trusted"
 
 [projects."/Users/arthur"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/better-youtube"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/v0-rent-comparison-site"]
 trust_level = "trusted"
 
 [plugins."github@openai-curated"]
@@ -12,3 +18,28 @@ enabled = true
 [mcp_servers.engram]
 command = "/opt/homebrew/bin/engram"
 args = ["mcp", "--tools=agent"]
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[marketplaces.openai-bundled]
+last_updated = "2026-04-24T08:12:49Z"
+source_type = "local"
+source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-04-24T08:13:08Z"
+source_type = "local"
+source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 2
