@@ -12,6 +12,15 @@ trust_level = "trusted"
 [projects."/Users/arthur/Developer/v0-rent-comparison-site"]
 trust_level = "trusted"
 
+[projects."/Users/arthur/Developer/gravel-sync"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/blog"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/starscout-extension"]
+trust_level = "trusted"
+
 [plugins."github@openai-curated"]
 enabled = true
 
@@ -19,8 +28,33 @@ enabled = true
 command = "/opt/homebrew/bin/engram"
 args = ["mcp", "--tools=agent"]
 
-[plugins."browser-use@openai-bundled"]
-enabled = true
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+notify = ["osascript", "-e", "display notification \"Codex finished responding\" with title \"Codex\""]
+
+[tui]
+notifications = true
+notification_condition = "unfocused"
+notification_method = "auto"
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "context-window-size"]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-04T15:43:37Z"
+source_type = "local"
+source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-04T16:38:52Z"
+source_type = "local"
+source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[features]
+goals = true
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -31,15 +65,5 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
-[marketplaces.openai-bundled]
-last_updated = "2026-04-24T08:12:49Z"
-source_type = "local"
-source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
-
-[marketplaces.openai-primary-runtime]
-last_updated = "2026-04-24T08:13:08Z"
-source_type = "local"
-source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
-
-[tui.model_availability_nux]
-"gpt-5.5" = 2
+[plugins."browser-use@openai-bundled"]
+enabled = true
