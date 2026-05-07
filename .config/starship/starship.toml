@@ -249,6 +249,9 @@ symbol = "🪺 "
 [python]
 symbol = " "
 format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+# After `python` (fast when a venv prefixes PATH), use the real interpreter so pyenv shims
+# do not hit Starship's command_timeout. Update the path when your pyenv global version changes.
+python_binary = ["python", "/Users/anunes-c/.pyenv/versions/3.12.7/bin/python", "python3"]
 
 [rlang]
 symbol = "ﳒ "
