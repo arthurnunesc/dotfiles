@@ -21,6 +21,9 @@ if [ $machine = "mac" ]; then
   export PATH=$PATH:$ANDROID_HOME/emulator
   export PATH=$PATH:$ANDROID_HOME/platform-tools
   export PATH=$PATH:$HOME/.maestro/bin
+
+  # Load the Bitwarden Secrets Manager token from macOS Keychain for Varlock.
+  export BITWARDEN_ACCESS_TOKEN="$(security find-generic-password -s bitwarden-varlock-token -w 2>/dev/null)"
 fi
 
 # Node/nvm config
