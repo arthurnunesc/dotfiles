@@ -34,6 +34,6 @@
   },
   "plugin": [
     "/Users/arthur/.config/opencode/plugins/notify.ts",
-    "opencode-gemini-auth@latest"
+    "/Users/arthur/.config/opencode/plugins/rtk.ts"
   ]
 }
