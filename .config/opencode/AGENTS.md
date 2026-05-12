@@ -136,3 +136,19 @@ If you see a compaction message or "FIRST ACTION REQUIRED":
 
 Do not skip step 1. Without it, everything done before compaction is lost from memory.
 <!-- /gentle-ai:engram-protocol -->
+
+## Subagent Delegation
+
+Use subagents proactively to keep the main context small.
+
+Delegate when:
+- Exploring 4+ files or broad codebase structure → use `explore`
+- Searching for architecture, patterns, or unknown code locations → use `explore`
+- Comparing multiple implementation or design options → use `general` in parallel
+- Running independent research paths → use `general`
+- Investigating external dependencies or docs → use `scout` if available
+
+Do inline when:
+- Reading 1-3 known files
+- Making a tiny mechanical edit
+- Answering a simple question
