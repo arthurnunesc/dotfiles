@@ -34,6 +34,7 @@
   },
   "plugin": [
     "/Users/arthur/.config/opencode/plugins/notify.ts",
-    "/Users/arthur/.config/opencode/plugins/rtk.ts"
+    "/Users/arthur/.config/opencode/plugins/rtk.ts",
+    "/Users/arthur/.config/opencode/plugins/private-aliases.ts"
   ]
 }
