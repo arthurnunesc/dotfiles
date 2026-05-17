@@ -3,6 +3,7 @@
 
 # Whitelist dotfiles we want to track
 !.gitignore
+!.ignore
 !README.md
 
 # Zsh

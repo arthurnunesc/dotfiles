@@ -1,0 +1,5 @@
+# Keep ripgrep-based tools from walking macOS private data and cloud mirrors
+# when they run from the home directory.
+.Trash/
+Library/
+Pictures/
