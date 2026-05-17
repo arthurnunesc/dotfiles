@@ -63,6 +63,81 @@ alias ai='print-ai-cli-tools'
 alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias code-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" code "$HOME"'
 
+opencode() {
+  local real_opencode="/opt/homebrew/bin/opencode"
+  local db="$HOME/.local/share/opencode/opencode.db"
+
+  if [[ "${OPENCODE_AUTO_RESUME:-1}" == "0" ]]; then
+    command "$real_opencode" "$@"
+    return $?
+  fi
+
+  if (( $# > 1 )); then
+    command "$real_opencode" "$@"
+    return $?
+  fi
+
+  local project_dir
+  if (( $# == 1 )); then
+    if [[ "$1" == -* || ! -d "$1" ]]; then
+      command "$real_opencode" "$@"
+      return $?
+    fi
+    project_dir="$(cd "$1" 2>/dev/null && pwd -P)" || {
+      command "$real_opencode" "$@"
+      return $?
+    }
+  else
+    project_dir="$(pwd -P)"
+  fi
+
+  local project_root
+  project_root="$(git -C "$project_dir" rev-parse --show-toplevel 2>/dev/null)" || project_root="$project_dir"
+  project_root="$(cd "$project_root" 2>/dev/null && pwd -P)" || project_root="$project_dir"
+
+  local lock_dir="$HOME/.local/state/opencode/auto-resume"
+  local project_key
+  mkdir -p "$lock_dir"
+  project_key="$(printf '%s' "$project_root" | cksum | awk '{print $1}')"
+  local lock_file="$lock_dir/$project_key.pid"
+
+  if [[ -r "$lock_file" ]]; then
+    local running_pid running_root
+    IFS=$'\t' read -r running_pid running_root < "$lock_file"
+    if [[ "$running_root" == "$project_root" && -n "$running_pid" ]] && kill -0 "$running_pid" 2>/dev/null; then
+      printf 'OpenCode is already running for %s; starting a new session instead of resuming the same one.\n' "$project_root" >&2
+      command "$real_opencode" "$@"
+      return $?
+    fi
+    rm -f "$lock_file"
+  fi
+
+  local session_id=""
+  if [[ -r "$db" ]] && command -v sqlite3 >/dev/null 2>&1; then
+    local escaped_root escaped_dir sql
+    escaped_root="${project_root//\'/\'\'}"
+    escaped_dir="${project_dir//\'/\'\'}"
+    if [[ "$project_root" == "/" ]]; then
+      sql="select id from session where time_archived is null and directory = '$escaped_dir' order by time_updated desc limit 1;"
+    else
+      sql="select id from session where time_archived is null and (directory = '$escaped_root' or directory like '$escaped_root/%') order by time_updated desc limit 1;"
+    fi
+    session_id="$(sqlite3 -cmd '.timeout 1000' "$db" "$sql" 2>/dev/null | head -n 1)"
+  fi
+
+  printf '%s\t%s\n' "$$" "$project_root" > "$lock_file"
+  trap 'rm -f "$lock_file"' EXIT INT TERM
+  if [[ -n "$session_id" ]]; then
+    command "$real_opencode" -s "$session_id"
+  else
+    command "$real_opencode" "$project_dir"
+  fi
+  local status=$?
+  rm -f "$lock_file"
+  trap - EXIT INT TERM
+  return $status
+}
+
 ### ZINIT ###
 ## Zinit installer chunk ##
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
