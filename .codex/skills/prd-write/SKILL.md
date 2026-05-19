@@ -5,9 +5,11 @@ description: Create a PRD through user interview, codebase exploration, and modu
 
 This skill will be invoked when the user wants to create a PRD. You may skip steps if you don't consider them necessary.
 
+The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+
 1. Ask the user for a long, detailed description of the problem they want to solve and any potential ideas for solutions.
 
-2. Explore the repo to verify their assertions and understand the current state of the codebase.
+2. Explore the repo to verify their assertions and understand the current state of the codebase. Use the project's domain glossary vocabulary throughout the PRD, and respect any ADRs in the area you're touching.
 
 3. Interview the user relentlessly about every aspect of this plan until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
@@ -17,7 +19,7 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD. The PRD should be submitted as a GitHub issue.
+5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD. The PRD should be published to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
 <prd-template>
 
@@ -54,6 +56,8 @@ A list of implementation decisions that were made. This can include:
 - Specific interactions
 
 Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
+
+Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
 ## Testing Decisions
 

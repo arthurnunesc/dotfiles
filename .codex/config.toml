@@ -21,6 +21,9 @@ trust_level = "trusted"
 [projects."/Users/arthur/Developer/starscout-extension"]
 trust_level = "trusted"
 
+[projects."/Users/arthur/Developer/darkest-companion-2"]
+trust_level = "trusted"
+
 [plugins."github@openai-curated"]
 enabled = true
 
@@ -44,12 +47,12 @@ status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-use
 "gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-04T15:43:37Z"
+last_updated = "2026-05-17T14:21:39Z"
 source_type = "local"
 source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-05-04T16:38:52Z"
+last_updated = "2026-05-17T14:38:54Z"
 source_type = "local"
 source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
@@ -65,5 +68,5 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
-[plugins."browser-use@openai-bundled"]
+[plugins."browser@openai-bundled"]
 enabled = true
