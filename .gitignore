@@ -37,6 +37,8 @@
 !.config/opencode/
 !.config/opencode/**
 .config/opencode/package-lock.json
+.config/opencode/context-mode/content/
+.config/opencode/context-mode/sessions/
 
 # Codex local files we do want to track
 !.codex/
