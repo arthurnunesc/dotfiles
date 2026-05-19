@@ -14,7 +14,6 @@
   "instructions": [
     "{file:./AGENTS.md}",
     "{file:./AGENTS-personal.md}",
-    "{file:./AGENTS-engram.md}",
     "{file:./AGENTS-context-mode.md}"
   ],
   "mcp": {
