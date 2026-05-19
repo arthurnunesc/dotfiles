@@ -3,11 +3,12 @@
   "agent": {
     "explore": {
       "mode": "subagent",
-      "model": "opencode-go/minimax-m2.7"
+      "model": "openai/gpt-5.4-mini"
     },
     "general": {
       "mode": "subagent",
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "openai/gpt-5.5",
+      "variant": "low"
     }
   },
   "instructions": [
@@ -25,16 +26,28 @@
     },
     "engram": {
       "command": [
-        "/opt/homebrew/Cellar/engram/1.13.1/bin/engram",
+        "/opt/homebrew/opt/engram/bin/engram",
         "mcp",
         "--tools=agent"
       ],
       "type": "local"
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
     }
   },
   "plugin": [
     "/Users/arthur/.config/opencode/plugins/notify.ts",
     "/Users/arthur/.config/opencode/plugins/rtk.ts",
     "/Users/arthur/.config/opencode/plugins/private-aliases.ts"
-  ]
+  ],
+  "permission": {
+    "external_directory": {
+      "~/Developer/**": "allow",
+      "/tmp/**": "allow",
+      "/var/folders/cq/*/T/chrome-devtools-mcp-*/**": "allow"
+    }
+  }
 }

@@ -7,16 +7,36 @@ const aliases: Record<string, string> = {
 	";source?": "Tell me how you got to that conclusion, source your claims.",
 }
 
+function rewriteExactAlias(parts: { type: string }[]) {
+	for (const part of parts) {
+		if (part.type !== "text") continue
+
+		const textPart = part as typeof part & { text?: string }
+		const replacement = aliases[textPart.text?.trim() ?? ""]
+		if (replacement) textPart.text = replacement
+	}
+}
+
+function rewriteCommandAlias(argument: string, parts: { type: string }[]) {
+	const alias = argument.trim()
+	const replacement = aliases[alias]
+	if (!replacement) return
+
+	for (const part of parts) {
+		if (part.type !== "text") continue
+
+		const textPart = part as typeof part & { text?: string }
+		if (textPart.text) textPart.text = textPart.text.replaceAll(alias, replacement)
+	}
+}
+
 export const PrivateAliasesPlugin: Plugin = async () => {
 	return {
 		"chat.message": async (_input, output) => {
-			for (const part of output.parts) {
-				if (part.type !== "text") continue
-
-				const textPart = part as typeof part & { text?: string }
-				const replacement = aliases[textPart.text?.trim() ?? ""]
-				if (replacement) textPart.text = replacement
-			}
+			rewriteExactAlias(output.parts)
+		},
+		"command.execute.before": async (input, output) => {
+			rewriteCommandAlias(input.arguments, output.parts)
 		},
 	}
 }
