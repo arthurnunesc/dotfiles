@@ -15,6 +15,7 @@
     "{file:./AGENTS-personal.md}",
     "{file:./AGENTS-context-mode.md}"
   ],
+  "model": "commandcode/deepseek/deepseek-v4-pro",
   "mcp": {
     "chrome-devtools": {
       "command": [
