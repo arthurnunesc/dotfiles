@@ -24,16 +24,6 @@
       ],
       "type": "local"
     },
-    "browser-use": {
-      "command": [
-        "uvx",
-        "--from",
-        "browser-use[cli]",
-        "browser-use",
-        "--mcp"
-      ],
-      "type": "local"
-    },
     "engram": {
       "command": [
         "/opt/homebrew/opt/engram/bin/engram",
