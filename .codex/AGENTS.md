@@ -140,5 +140,3 @@ If you see a compaction message or "FIRST ACTION REQUIRED":
 
 Do not skip step 1. Without it, everything done before compaction is lost from memory.
 <!-- /gentle-ai:engram-protocol -->
-
-@/Users/arthur/.codex/RTK.md

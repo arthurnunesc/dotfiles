@@ -12,8 +12,7 @@
   },
   "instructions": [
     "{file:./AGENTS.md}",
-    "{file:./AGENTS-personal.md}",
-    "{file:./AGENTS-context-mode.md}"
+    "{file:./AGENTS-personal.md}"
   ],
   "model": "commandcode/deepseek/deepseek-v4-pro",
   "mcp": {
@@ -46,16 +45,6 @@
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
-      "enabled": true
-    },
-    "codegraph": {
-      "command": [
-        "/opt/homebrew/opt/node@22/bin/node",
-        "/opt/homebrew/lib/node_modules/@colbymchenry/codegraph/dist/bin/codegraph.js",
-        "serve",
-        "--mcp"
-      ],
-      "type": "local",
       "enabled": true
     }
   },
@@ -140,9 +129,7 @@
     }
   },
   "plugin": [
-    "context-mode",
     "/Users/arthur/.config/opencode/plugins/notify.ts",
-    "/Users/arthur/.config/opencode/plugins/rtk.ts",
     "/Users/arthur/.config/opencode/plugins/private-aliases.ts"
   ],
   "permission": {
