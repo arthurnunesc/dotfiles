@@ -1,8 +1,6 @@
 {
   "$schema": "https://opencode.ai/tui.json",
-  "keybinds": {
-    "leader": "option"
-  },
+  "keybinds": {},
   "plugin": [
     "opencode-subagent-statusline"
   ],
