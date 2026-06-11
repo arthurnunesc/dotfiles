@@ -42,6 +42,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PIPENV_VENV_IN_PROJECT=1
 export PIPENV_IGNORE_VIRTUALENVS=1
 
+# AWS config
+export AWS_PROFILE=dev
+
 
 # Aliases and PATH additions
 if [ -d "$HOME/.local/bin" ]; then
