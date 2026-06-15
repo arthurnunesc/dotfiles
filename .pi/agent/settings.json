@@ -7,7 +7,7 @@
   "theme": "light",
   "hideThinkingBlock": false,
   "skills": [
-    "~/.config/opencode/skills"
+    "~/.agents/skills"
   ],
   "packages": [
     "npm:gentle-engram@0.1.7",

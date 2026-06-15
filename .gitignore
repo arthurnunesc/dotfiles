@@ -53,6 +53,11 @@
 !.pi/agent/skills/
 !.pi/agent/skills/**
 
+# Shared agent skills
+!.agents/
+!.agents/skills/
+!.agents/skills/**
+
 # Codex local files we do want to track
 !.codex/
 !.codex/skills/
