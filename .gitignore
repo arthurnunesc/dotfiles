@@ -40,6 +40,19 @@
 .config/opencode/context-mode/content/
 .config/opencode/context-mode/sessions/
 
+# Pi
+!.pi/
+!.pi/agent/
+!.pi/agent/settings.json
+!.pi/agent/mcp.json
+!.pi/agent/trust.json
+!.pi/agent/extensions/
+!.pi/agent/extensions/*.ts
+!.pi/agent/extensions/package.json
+!.pi/agent/extensions/package-lock.json
+!.pi/agent/skills/
+!.pi/agent/skills/**
+
 # Codex local files we do want to track
 !.codex/
 !.codex/skills/

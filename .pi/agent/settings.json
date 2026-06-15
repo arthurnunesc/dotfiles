@@ -1,0 +1,18 @@
+{
+  "lastChangelogVersion": "0.79.4",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "high",
+  "enableInstallTelemetry": false,
+  "theme": "light",
+  "hideThinkingBlock": false,
+  "skills": [
+    "~/.config/opencode/skills"
+  ],
+  "packages": [
+    "npm:gentle-engram@0.1.7",
+    "npm:pi-mcp-adapter",
+    "npm:@upstash/context7-pi",
+    "npm:@ff-labs/pi-fff"
+  ]
+}
