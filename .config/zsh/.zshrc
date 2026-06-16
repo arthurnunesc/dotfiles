@@ -66,6 +66,7 @@ alias '/exit'='exit'
 alias ai='print-ai-cli-tools'
 alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias code-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" code "$HOME"'
+alias pi='env -u AWS_PROFILE pi'
 
 opencode() {
   local real_opencode="/opt/homebrew/bin/opencode"
@@ -141,6 +142,7 @@ opencode() {
   trap - EXIT INT TERM
   return $status
 }
+alias opencode='env -u AWS_PROFILE opencode'
 
 ### ZINIT ###
 ## Zinit installer chunk ##
