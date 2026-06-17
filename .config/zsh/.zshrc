@@ -159,7 +159,6 @@ autoload -Uz _zinit
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1
-zinit light jeffreytse/zsh-vi-mode
 ### ZINIT END ###
 
 
