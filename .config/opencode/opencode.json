@@ -26,14 +26,6 @@
   ],
   "model": "commandcode/deepseek/deepseek-v4-pro",
   "mcp": {
-    "chrome-devtools": {
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ],
-      "type": "local"
-    },
     "engram": {
       "command": [
         "/opt/homebrew/opt/engram/bin/engram",
@@ -162,8 +154,7 @@
   "permission": {
     "external_directory": {
       "~/Developer/**": "allow",
-      "/tmp/**": "allow",
-      "/var/folders/cq/*/T/chrome-devtools-mcp-*/**": "allow"
+      "/tmp/**": "allow"
     }
   }
 }
