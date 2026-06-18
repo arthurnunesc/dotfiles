@@ -68,10 +68,18 @@ Do inline when:
 
 ## Browser Automation
 
-Use `agent-browser` for web automation. Run `agent-browser --help` for all commands.
+Use one browser owner per task. Do not mix browser controllers unless there is a concrete escalation reason.
 
-Core workflow:
+Default to `agent-browser` for app testing, UI verification, screenshots, bug reproduction, local dev workflows, and deterministic browser automation. Run `agent-browser --help` for commands.
+
+Use `browser-use` only for Computer Use-style tasks that require the user's existing authenticated Chrome profile or real account workflows.
+
+Use the `chrome-devtools` CLI only as a debugging escalation path for network payloads, console/runtime inspection, performance traces, Lighthouse audits, heap snapshots, or attaching DevTools commands to an existing debuggable Chrome session. Load the `chrome-devtools` skill before running `chrome-devtools` commands. Do not use the Chrome DevTools MCP server by default.
+
+Core `agent-browser` workflow:
 1. `agent-browser open <url>` - Navigate to page
 2. `agent-browser snapshot -i` - Get interactive elements with refs (@e1, @e2)
 3. `agent-browser click @e1` / `fill @e2 "text"` - Interact using refs
 4. Re-snapshot after page changes
+
+Escalation rule: if `agent-browser` or `browser-use` owns the browser session, attach `chrome-devtools` to that existing CDP endpoint when possible instead of launching another independent browser. Never export cookies or auth state just to switch tools unless the user explicitly asks.
