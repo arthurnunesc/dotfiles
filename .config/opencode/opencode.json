@@ -21,8 +21,7 @@
     }
   },
   "instructions": [
-    "{file:./AGENTS.md}",
-    "{file:./AGENTS-personal.md}"
+    "{file:./AGENTS.md}"
   ],
   "model": "commandcode/deepseek/deepseek-v4-pro",
   "mcp": {
