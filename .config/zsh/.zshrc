@@ -45,6 +45,9 @@ export PIPENV_IGNORE_VIRTUALENVS=1
 # AWS config
 export AWS_PROFILE=dev
 
+# Resend config
+export RESEND_TELEMETRY_DISABLED=1
+
 
 # Aliases and PATH additions
 if [ -d "$HOME/.local/bin" ]; then
