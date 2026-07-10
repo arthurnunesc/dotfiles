@@ -46,6 +46,14 @@
       ],
       "type": "local",
       "enabled": true
+    },
+    "lazyweb": {
+      "type": "remote",
+      "url": "https://www.lazyweb.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {file:/Users/arthur/.lazyweb/lazyweb_mcp_token}"
+      }
     }
   },
   "provider": {
