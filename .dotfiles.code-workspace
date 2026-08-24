@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "Library": true
+    },
+    "files.watcherExclude": {
+      "Library/**": true
+    },
+    "search.exclude": {
+      "Library/**": true
+    }
+  }
+}

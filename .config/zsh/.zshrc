@@ -80,7 +80,7 @@ export PATH="$PATH:/Users/arthur/.lmstudio/bin"
 alias '/exit'='exit'
 alias ai='print-ai-cli-tools'
 alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
-alias code-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" code "$HOME"'
+alias code-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" code --new-window --disable-extensions "$HOME/.dotfiles.code-workspace"'
 alias pi='env -u AWS_PROFILE pi'
 
 opencode() {

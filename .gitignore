@@ -5,6 +5,7 @@
 !.gitignore
 !.ignore
 !README.md
+!.dotfiles.code-workspace
 
 # Zsh
 !.zshenv
