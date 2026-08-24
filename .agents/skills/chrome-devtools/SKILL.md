@@ -1,6 +1,11 @@
 ---
 name: chrome-devtools
-description: Uses the `chrome-devtools` CLI as a browser debugging escalation path. Use when deeper inspection is needed after `agent-browser` or `browser-use`: network requests, console/runtime inspection, performance traces, Lighthouse, heap snapshots, or attaching DevTools commands to an existing debuggable Chrome session.
+description: >-
+  Uses the `chrome-devtools` CLI as a browser debugging escalation path. Use
+  when deeper inspection is needed after `agent-browser` or `browser-use`,
+  including network requests, console/runtime inspection, performance traces,
+  Lighthouse, heap snapshots, or attaching DevTools commands to an existing
+  debuggable Chrome session.
 allowed-tools: Bash(chrome-devtools:*), Bash(agent-browser:*), Bash(browser-use:*)
 ---
 
