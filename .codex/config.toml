@@ -1,5 +1,11 @@
-model = "gpt-5.5"
-model_reasoning_effort = "low"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+notify = [
+  "/Users/arthur/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+  "turn-ended"
+]
+service_tier = "default"
+
 [projects."/Users/arthur/.dotfiles"]
 trust_level = "trusted"
 
@@ -24,40 +30,35 @@ trust_level = "trusted"
 [projects."/Users/arthur/Developer/darkest-companion-2"]
 trust_level = "trusted"
 
+[projects."/Users/arthur/Developer/sourcecrow"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/sourcecrow-before-implementation"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer/opencode-consumption-dashboard"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Developer"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Documents/Codex/2026-08-03/wha"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Documents/Codex/2026-08-03/realtime-voice-chat"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Documents/ChatGPT/reel-analyzing"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Documents/ChatGPT/pes"]
+trust_level = "trusted"
+
+[projects."/Users/arthur/Downloads/Coisas pro Wallapop"]
+trust_level = "trusted"
+
 [plugins."github@openai-curated"]
 enabled = true
-
-[mcp_servers.engram]
-command = "/opt/homebrew/bin/engram"
-args = ["mcp", "--tools=agent"]
-
-[mcp_servers.context7]
-command = "npx"
-args = ["-y", "@upstash/context7-mcp"]
-
-notify = ["osascript", "-e", "display notification \"Codex finished responding\" with title \"Codex\""]
-
-[tui]
-notifications = true
-notification_condition = "unfocused"
-notification_method = "auto"
-status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "context-window-size"]
-
-[tui.model_availability_nux]
-"gpt-5.5" = 4
-
-[marketplaces.openai-bundled]
-last_updated = "2026-05-17T14:21:39Z"
-source_type = "local"
-source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
-
-[marketplaces.openai-primary-runtime]
-last_updated = "2026-05-17T14:38:54Z"
-source_type = "local"
-source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
-
-[features]
-goals = true
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -68,9 +69,116 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
+[plugins."google-calendar@openai-curated"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
 [plugins."browser@openai-bundled"]
 enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[mcp_servers.engram]
+command = "/opt/homebrew/bin/engram"
+args = [ "mcp", "--tools=agent" ]
+
+[mcp_servers.context7]
+command = "npx"
+args = [ "-y", "@upstash/context7-mcp" ]
+
+[mcp_servers.flyctl]
+command = "/opt/homebrew/bin/fly"
+args = [ "mcp", "server" ]
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+  [mcp_servers.node_repl.env]
+  NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+  NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+  NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+  NODE_REPL_TRUSTED_CODE_PATHS = "/Users/arthur/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+  CODEX_HOME = "/Users/arthur/.codex"
+  BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
+  BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.814.41407"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/arthur/.codex/plugins/cache/openai-bundled/browser/26.814.41407/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+  CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[tui]
+notifications = true
+notification_condition = "unfocused"
+notification_method = "auto"
+status_line = [
+  "model-with-reasoning",
+  "current-dir",
+  "git-branch",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+  "context-window-size"
+]
+session_picker_view = "comfortable"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 1
+
+[marketplaces.openai-bundled]
+last_updated = "2026-08-24T12:34:48Z"
+source_type = "local"
+source = "/Users/arthur/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-08-24T12:35:31Z"
+source_type = "local"
+source = "/Users/arthur/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[features]
+goals = true
+js_repl = false
+
+[desktop]
+preventSleepWhileRunning = true
+keepRemoteControlAwakeWhilePluggedIn = true
+followUpQueueMode = "queue"
+dock-icon-preference = "app-default"
+open-link-in-target-preference = "external-browser"
+conversationDetailMode = "STEPS_COMMANDS"
+notifications-turn-mode = "unfocused"
+
+  [desktop.open-in-target-preferences]
+  global = "zed"
+
+[shell_environment_policy.set]
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7fe0e1c59da4bc68f9d6ab81ae8d349b53fee44b074f49be0effbc1105a5f1d3"
 
 [mcp_servers.lazyweb]
 command = "sh"
 args = ["-lc", "TOKEN=\"${LAZYWEB_MCP_TOKEN:-}\"; if [ -z \"$TOKEN\" ] && [ -f \"$HOME/.lazyweb/lazyweb_mcp_token\" ]; then TOKEN=\"$(cat \"$HOME/.lazyweb/lazyweb_mcp_token\")\"; fi; exec npx -y mcp-remote https://www.lazyweb.com/mcp --header \"Authorization: Bearer $TOKEN\" --transport http-first"]
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
