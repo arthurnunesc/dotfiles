@@ -45,14 +45,6 @@
       ],
       "enabled" : true,
       "type" : "local"
-    },
-    "lazyweb" : {
-      "enabled" : true,
-      "headers" : {
-        "Authorization" : "Bearer {file:/Users/arthur/.lazyweb/lazyweb_mcp_token}"
-      },
-      "type" : "remote",
-      "url" : "https:\/\/www.lazyweb.com\/mcp"
     }
   },
   "model" : "openai\/gpt-5.6-sol",
