@@ -30,6 +30,10 @@
 !.config/ghostty/
 !.config/ghostty/config.ghostty
 
+# CMux
+!.config/cmux/
+!.config/cmux/cmux.json
+
 # GGA
 !.config/gga/
 !.config/gga/**
