@@ -12,6 +12,11 @@
     "reorderOnNotification": false
   },
 
+  "browser": {
+    "openTerminalLinksInCmuxBrowser": false,
+    "interceptTerminalOpenCommandInCmuxBrowser": false
+  },
+
   //   "app" : {
   //     "appearance" : "system",
   //     "appIcon" : "automatic",
