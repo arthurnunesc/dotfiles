@@ -1,0 +1,12 @@
+{
+  "name": "cmux-resume-safe",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tui": "./tui.js",
+    "./resume": "./resume.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules --test *.test.mjs"
+  }
+}

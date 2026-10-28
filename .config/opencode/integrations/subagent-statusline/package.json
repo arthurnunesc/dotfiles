@@ -1,0 +1,16 @@
+{
+  "name": "local-opencode-subagent-statusline",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tui": "./tui.js"
+  },
+  "dependencies": {
+    "@opencode/plugin": "2.1.2",
+    "@opencode/theme": "2.1.2",
+    "@opentui/core": "0.6.8",
+    "@opentui/solid": "0.6.8",
+    "opencode-subagent-statusline": "2.1.0",
+    "solid-js": "1.9.12"
+  }
+}

@@ -1,15 +1,14 @@
 import * as fs from "node:fs/promises"
 import * as os from "node:os"
 import * as path from "node:path"
-import type { Plugin } from "@opencode-ai/plugin"
-import type { Event } from "@opencode-ai/sdk"
-// @ts-expect-error - installed locally for plugin runtime
+import type { V2Event } from "@opencode/client"
+import { Plugin } from "@opencode/plugin"
 import detectTerminal from "detect-terminal"
-// @ts-expect-error - installed locally for plugin runtime
 import notifier from "node-notifier"
-import type { OpencodeClient } from "./kdco-primitives/types"
 import { sendNotificationWithFallback } from "./notify/backend"
 import { canUseCmuxNotification, sendCmuxNotification } from "./notify/cmux"
+
+type SessionClient = Plugin.Context["session"]
 
 interface NotifyConfig {
 	notifyChildSessions: boolean
@@ -157,10 +156,10 @@ function isQuietHours(config: NotifyConfig): boolean {
 	return currentMinutes >= startMinutes && currentMinutes < endMinutes
 }
 
-async function isParentSession(client: OpencodeClient, sessionID: string): Promise<boolean> {
+async function isParentSession(client: SessionClient, sessionID: string): Promise<boolean> {
 	try {
-		const session = await client.session.get({ path: { id: sessionID } })
-		return !session.data?.parentID
+		const session = await client.get({ sessionID })
+		return !session.parentID
 	} catch {
 		return true
 	}
@@ -297,7 +296,7 @@ async function sendNotification(
 }
 
 async function handleSessionIdle(
-	client: OpencodeClient,
+	client: SessionClient,
 	sessionID: string,
 	config: NotifyConfig,
 	terminalInfo: TerminalInfo,
@@ -313,9 +312,9 @@ async function handleSessionIdle(
 
 	let sessionTitle = "Task"
 	try {
-		const session = await client.session.get({ path: { id: sessionID } })
-		if (session.data?.title) {
-			sessionTitle = session.data.title.slice(0, 50)
+		const session = await client.get({ sessionID })
+		if (session.title) {
+			sessionTitle = session.title.slice(0, 50)
 		}
 	} catch {}
 
@@ -333,7 +332,7 @@ async function handleSessionIdle(
 }
 
 async function handleSessionError(
-	client: OpencodeClient,
+	client: SessionClient,
 	sessionID: string,
 	error: string | undefined,
 	config: NotifyConfig,
@@ -400,8 +399,19 @@ async function handleQuestionAsked(
 	)
 }
 
-export const NotifyPlugin: Plugin = async (ctx) => {
-	const { client } = ctx
+function errorMessage(error: unknown): string | undefined {
+	if (typeof error === "string") return error
+	if (error && typeof error === "object" && "message" in error) {
+		const message = (error as { message?: unknown }).message
+		if (typeof message === "string") return message
+	}
+	return error ? String(error) : undefined
+}
+
+export const NotifyPlugin = Plugin.define({
+	id: "notify",
+	async setup(ctx) {
+	const client = ctx.session
 	const config = await loadConfig()
 	const terminalInfo = await detectTerminalInfo(config)
 	const notificationRuntime: NotificationRuntime = {
@@ -440,7 +450,7 @@ export const NotifyPlugin: Plugin = async (ctx) => {
 		}
 
 		await handleSessionIdle(
-			client as OpencodeClient,
+			client,
 			normalizedSessionID,
 			config,
 			terminalInfo,
@@ -465,21 +475,17 @@ export const NotifyPlugin: Plugin = async (ctx) => {
 		await handlePermissionUpdated(config, terminalInfo, notificationRuntime)
 	}
 
-	return {
-		"tool.execute.before": async (input: { tool: string; sessionID: string; callID: string }) => {
-			if (input.tool === "question") {
-				await notifyQuestionIfNeeded(buildQuestionToolDedupeKey(input.sessionID, input.callID))
-			}
-		},
-		event: async ({ event }: { event: Event }): Promise<void> => {
-			const runtimeEvent = event as { type: string; properties: Record<string, unknown> }
+	const controller = new AbortController()
+	const consume = async (): Promise<void> => {
+		for await (const runtimeEvent of ctx.event.subscribe({ signal: controller.signal })) {
+			const properties = runtimeEvent.data as Record<string, unknown>
 
-			switch (runtimeEvent.type) {
+			switch (runtimeEvent.type as V2Event["type"]) {
 				case "session.status": {
-					const sessionID = runtimeEvent.properties.sessionID
+					const sessionID = properties.sessionID
 					const statusType =
-						runtimeEvent.properties.status && typeof runtimeEvent.properties.status === "object"
-							? ((runtimeEvent.properties.status as { type?: string }).type ?? undefined)
+						properties.status && typeof properties.status === "object"
+							? ((properties.status as { type?: string }).type ?? undefined)
 							: undefined
 
 					if (sessionID && statusType === "idle") {
@@ -488,18 +494,20 @@ export const NotifyPlugin: Plugin = async (ctx) => {
 					break
 				}
 				case "session.idle": {
-					await notifySessionReadyIfNeeded(runtimeEvent.properties.sessionID)
+					await notifySessionReadyIfNeeded(properties.sessionID)
 					break
 				}
-				case "session.error": {
-					const sessionID = toNonEmptyString(runtimeEvent.properties.sessionID)
-					const error = runtimeEvent.properties.error
-					const errorMessage = typeof error === "string" ? error : error ? String(error) : undefined
+				case "session.execution.succeeded": {
+					await notifySessionReadyIfNeeded(properties.sessionID)
+					break
+				}
+				case "session.execution.failed": {
+					const sessionID = toNonEmptyString(properties.sessionID)
 					if (sessionID) {
 						await handleSessionError(
-							client as OpencodeClient,
+							client,
 							sessionID,
-							errorMessage,
+							errorMessage(properties.error),
 							config,
 							terminalInfo,
 							notificationRuntime,
@@ -507,19 +515,28 @@ export const NotifyPlugin: Plugin = async (ctx) => {
 					}
 					break
 				}
-				case "permission.updated":
 				case "permission.asked": {
-					await notifyPermissionIfNeeded(runtimeEvent.properties)
+					await notifyPermissionIfNeeded(properties)
 					break
 				}
-				case "question.asked": {
-					const dedupeKey = buildQuestionEventDedupeKey(runtimeEvent.properties)
+				case "form.created": {
+					const form = properties.form
+					const dedupeKey = buildQuestionEventDedupeKey(form)
 					await notifyQuestionIfNeeded(dedupeKey)
 					break
 				}
 			}
-		},
+		}
 	}
-}
+	const consuming = consume().catch((error) => {
+		if (!controller.signal.aborted) console.warn("[notify] event subscription failed", error)
+	})
+
+	return async () => {
+		controller.abort()
+		await consuming
+	}
+	},
+})
 
 export default NotifyPlugin

@@ -1,4 +1,4 @@
-import type { Plugin } from "@opencode-ai/plugin"
+import { Plugin } from "@opencode/plugin"
 
 const aliases: Record<string, string> = {
 	";go": "Proceed with the implementation of the plan.",
@@ -7,38 +7,14 @@ const aliases: Record<string, string> = {
 	";source?": "Tell me how you got to that conclusion, source your claims.",
 }
 
-function rewriteExactAlias(parts: { type: string }[]) {
-	for (const part of parts) {
-		if (part.type !== "text") continue
-
-		const textPart = part as typeof part & { text?: string }
-		const replacement = aliases[textPart.text?.trim() ?? ""]
-		if (replacement) textPart.text = replacement
-	}
-}
-
-function rewriteCommandAlias(argument: string, parts: { type: string }[]) {
-	const alias = argument.trim()
-	const replacement = aliases[alias]
-	if (!replacement) return
-
-	for (const part of parts) {
-		if (part.type !== "text") continue
-
-		const textPart = part as typeof part & { text?: string }
-		if (textPart.text) textPart.text = textPart.text.replaceAll(alias, replacement)
-	}
-}
-
-export const PrivateAliasesPlugin: Plugin = async () => {
-	return {
-		"chat.message": async (_input, output) => {
-			rewriteExactAlias(output.parts)
-		},
-		"command.execute.before": async (input, output) => {
-			rewriteCommandAlias(input.arguments, output.parts)
-		},
-	}
-}
+export const PrivateAliasesPlugin = Plugin.define({
+	id: "private-aliases",
+	async setup(ctx) {
+		await ctx.session.hook("prompt", (event) => {
+			const replacement = aliases[event.prompt.text.trim()]
+			if (replacement) event.prompt.text = replacement
+		})
+	},
+})
 
 export default PrivateAliasesPlugin
