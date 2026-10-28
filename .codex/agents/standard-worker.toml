@@ -1,6 +1,6 @@
 name = "standard-worker"
 description = "Bounded substantive work requiring more reasoning: multi-file features, moderately complex debugging, nontrivial automation, investigation, and integration with explicit contracts."
-model = "gpt-5.6-terra"
+model = "gpt-6.1-terra"
 model_reasoning_effort = "high"
 developer_instructions = """
 Investigate within the assigned scope, make localized design choices, and implement the agreed contracts. Escalate unresolved architecture, major security implications, significant ambiguity, or broader system consequences to the parent. Verify the result with appropriate targeted checks.

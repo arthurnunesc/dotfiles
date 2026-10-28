@@ -70,7 +70,7 @@
       "description" : "Bounded implementation compatibility agent for existing workflows. Prefer standard-worker for new delegation.",
       "hidden" : true,
       "mode" : "subagent",
-      "model" : "openai/gpt-5.6-terra#high"
+      "model" : "openai/gpt-6.1-terra#high"
     },
     "plan" : {
       "description" : "Optional analysis primary, selected explicitly by the user. Investigates and plans without implementation.",
@@ -154,7 +154,7 @@
       ]
     },
     "standard-worker" : {
-      "model" : "openai/gpt-5.6-terra#high"
+      "model" : "openai/gpt-6.1-terra#high"
     }
   },
   "commands" : {
