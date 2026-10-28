@@ -5,9 +5,7 @@
         "mcp",
         "--tools=agent"
       ],
-      "command": "/opt/homebrew/Cellar/engram/1.16.1/bin/engram",
-      "directTools": false,
-      "lifecycle": "lazy"
+      "command": "/opt/homebrew/bin/engram"
     }
   }
 }
