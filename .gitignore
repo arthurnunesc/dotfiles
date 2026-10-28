@@ -60,9 +60,12 @@
 
 # Shared agent skills
 !.agents/
+!.agents/.skill-lock.json
+!.agents/skills-migration-report.md
 !.agents/skills/
 !.agents/skills/**
 .agents/skills/.DS_Store
+.agents/skills/brag
 
 # Codex local files we do want to track
 !.codex/
@@ -74,3 +77,26 @@
 !.codex/AGENTS.md
 !.codex/engram-instructions.md
 !.codex/engram-compact-prompt.md
+
+# Orca integrations are app-managed and stay local
+.orca/
+.codex/hooks.json
+.config/opencode/plugins/orca-*
+.pi/agent/extensions/orca-*.ts
+.copilot/hooks/orca.json
+.grok/hooks/orca-status.json
+
+# Private credentials, runtime state, and local backups
+.config/opencode/secrets/
+.config/opencode/service.json
+.config/opencode/backups/
+.config/opencode/*.bak*
+
+# Regenerate installer-owned integrations rather than versioning local copies
+.config/opencode/plugins/cmux/
+.agents/skills/noqa-testing
+.codex/skills/noqa-testing
+
+# Capability role definitions are source configuration
+!.codex/agents/
+!.codex/agents/*.toml
