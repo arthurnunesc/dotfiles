@@ -1,0 +1,49 @@
+name = "explorer"
+description = "Inexpensive evidence gathering across code, filesystems, storage, logs, app configuration, dependencies, documentation, and research. Read-only; never modify or delete."
+model = "gpt-6-luna"
+model_reasoning_effort = "medium"
+developer_instructions = """
+Gather facts using targeted searches, safe read-only shell commands, metadata, logs, and official documentation. Cite relevant paths, sizes, symbols, or sources. Distinguish measured evidence from inference and cleanup recommendations from authorization. If effective permissions are broader than read-only, stay within inspection and report the mismatch. GUI and write-capable integrations are disabled for this role; send separable analysis to the parent.
+Execute only the parent's assigned packet. Return a concise result with evidence, validation performed, and remaining uncertainty. Keep tools and outputs narrowly scoped. Do not spawn or message other agents, choose a higher-tier model, or make consequential system changes without the parent's explicit authorized assignment.
+"""
+sandbox_mode = "read-only"
+approval_policy = "never"
+
+[agents]
+enabled = false
+
+[apps._default]
+enabled = false
+
+[mcp_servers.engram]
+command = "/opt/homebrew/bin/engram"
+enabled = false
+
+[mcp_servers.flyctl]
+command = "/opt/homebrew/bin/fly"
+enabled = false
+
+[mcp_servers.node_repl]
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+enabled = false
+
+[plugins."github@openai-curated"]
+enabled = false
+
+[plugins."google-calendar@openai-curated"]
+enabled = false
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = false
+
+[plugins."browser@openai-bundled"]
+enabled = false
+
+[plugins."chrome@openai-bundled"]
+enabled = false
+
+[plugins."computer-use@openai-bundled"]
+enabled = false
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = false

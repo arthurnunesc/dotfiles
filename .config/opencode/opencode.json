@@ -1,37 +1,204 @@
 {
-  "$schema" : "https:\/\/opencode.ai\/config.json",
-  "agent" : {
+  "$schema" : "https://opencode.ai/config.json",
+  "agents" : {
     "build" : {
-      "model" : "openai\/gpt-5.6-sol",
-      "variant" : "medium"
+      "description" : "Normal primary engineer and orchestrator. Owns dynamic routing, architecture, integration, and final validation.",
+      "model" : "openai/gpt-6.1-sol#medium"
+    },
+    "cheap-worker" : {
+      "model" : "openai/gpt-6-luna#high"
     },
     "explore" : {
+      "description" : "Read-only, low-overhead codebase investigation. Finds files, symbols, call paths, behavior, and tests; returns concise evidence without architecture speculation.",
+      "hidden" : false,
       "mode" : "subagent",
-      "model" : "openai\/gpt-5.6-terra",
-      "variant" : "medium"
+      "model" : "openai/gpt-6-luna#medium",
+      "permissions" : [
+        {
+          "action" : "*",
+          "effect" : "deny",
+          "resource" : "*"
+        },
+        {
+          "action" : "read",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "read",
+          "effect" : "ask",
+          "resource" : "*.env"
+        },
+        {
+          "action" : "read",
+          "effect" : "ask",
+          "resource" : "*.env.*"
+        },
+        {
+          "action" : "read",
+          "effect" : "allow",
+          "resource" : "*.env.example"
+        },
+        {
+          "action" : "glob",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "grep",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "webfetch",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "websearch",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "external_directory",
+          "effect" : "ask",
+          "resource" : "*"
+        }
+      ]
     },
     "general" : {
+      "description" : "Bounded implementation compatibility agent for existing workflows. Prefer standard-worker for new delegation.",
+      "hidden" : true,
       "mode" : "subagent",
-      "model" : "openai\/gpt-5.6-sol",
-      "variant" : "medium"
+      "model" : "openai/gpt-5.6-terra#high"
     },
     "plan" : {
-      "model" : "openai\/gpt-5.6-sol",
-      "variant" : "high"
+      "description" : "Optional analysis primary, selected explicitly by the user. Investigates and plans without implementation.",
+      "model" : "openai/gpt-6.1-sol#high",
+      "permissions" : [
+        {
+          "action" : "*",
+          "effect" : "deny",
+          "resource" : "*"
+        },
+        {
+          "action" : "read",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "read",
+          "effect" : "ask",
+          "resource" : "*.env"
+        },
+        {
+          "action" : "read",
+          "effect" : "ask",
+          "resource" : "*.env.*"
+        },
+        {
+          "action" : "read",
+          "effect" : "allow",
+          "resource" : "*.env.example"
+        },
+        {
+          "action" : "glob",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "grep",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "webfetch",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "websearch",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "skill",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "question",
+          "effect" : "allow",
+          "resource" : "*"
+        },
+        {
+          "action" : "external_directory",
+          "effect" : "ask",
+          "resource" : "*"
+        },
+        {
+          "action" : "external_directory",
+          "effect" : "allow",
+          "resource" : "~/.opencode/plan/*"
+        },
+        {
+          "action" : "edit",
+          "effect" : "allow",
+          "resource" : "~/.opencode/plan/*"
+        },
+        {
+          "action" : "subagent",
+          "effect" : "allow",
+          "resource" : "explore"
+        }
+      ]
+    },
+    "standard-worker" : {
+      "model" : "openai/gpt-5.6-terra#high"
     }
   },
-  "instructions" : [
-    "{file:/Users/arthur/.config/opencode/AGENTS.md}"
-  ],
+  "commands" : {
+    "build" : {
+      "agent" : "build",
+      "description" : "Explicitly select the normal Build agent and its configured model/variant.",
+      "subagent" : false,
+      "template" : "Handle this request using the normal Build workflow: $ARGUMENTS"
+    },
+    "plan" : {
+      "agent" : "plan",
+      "description" : "Explicitly select optional read-only Plan and its configured model/variant.",
+      "subagent" : false,
+      "template" : "Analyze this request without implementation: $ARGUMENTS"
+    }
+  },
+  "default_agent" : "build",
+  "experimental" : {
+    "policies" : [
+      {
+        "action" : "provider.use",
+        "effect" : "deny",
+        "resource" : "*"
+      },
+      {
+        "action" : "provider.use",
+        "effect" : "allow",
+        "resource" : "openai"
+      }
+    ]
+  },
   "mcp" : {
     "context7" : {
       "enabled" : true,
       "type" : "remote",
-      "url" : "https:\/\/mcp.context7.com\/mcp"
+      "url" : "https://mcp.context7.com/mcp",
+      "oauth" : false,
+      "headers" : {
+        "CONTEXT7_API_KEY" : "{file:~/.config/opencode/secrets/context7-api-key}"
+      }
     },
     "engram" : {
       "command" : [
-        "\/opt\/homebrew\/opt\/engram\/bin\/engram",
+        "/opt/homebrew/opt/engram/bin/engram",
         "mcp",
         "--tools=agent"
       ],
@@ -39,7 +206,7 @@
     },
     "flyctl" : {
       "command" : [
-        "\/opt\/homebrew\/bin\/fly",
+        "/opt/homebrew/bin/fly",
         "mcp",
         "server"
       ],
@@ -47,16 +214,25 @@
       "type" : "local"
     }
   },
-  "model" : "openai\/gpt-5.6-sol",
+  "model" : "openai/gpt-6.1-sol",
   "permission" : {
     "external_directory" : {
-      "\/tmp\/**" : "allow",
-      "~\/Developer\/**" : "allow"
+      "/tmp/**" : "allow",
+      "~/Developer/**" : "allow"
     }
   },
   "plugin" : [
-    "\/Users\/arthur\/.config\/opencode\/plugins\/notify.ts",
-    "\/Users\/arthur\/.config\/opencode\/plugins\/private-aliases.ts",
-    ".\/plugins\/cmux-session.js"
-  ]
+    "./plugins/cmux"
+  ],
+  "providers" : {
+    "openai" : {
+      "models" : {
+        "gpt-6.1-sol" : {
+          "settings" : {
+            "reasoningEffort" : "medium"
+          }
+        }
+      }
+    }
+  }
 }

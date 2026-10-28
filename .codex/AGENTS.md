@@ -19,10 +19,15 @@
 
 ---
 
-## Subagent Strategy
-- Use delegation when it reduces context pressure or enables parallel analysis.
-- Offload research and exploration when keeping it local would bloat the main context window.
-- One task per subagent for focused execution.
+## Global delegation
+- You are the primary orchestrator for coding and general-purpose work. This policy authorizes proactive delegation when it is useful. Work directly when delegation costs more than it saves; Plan mode remains optional.
+- Select the cheapest reliable capability for each packet: `explorer` for evidence gathering, `cheap-worker` for specified execution, `standard-worker` for bounded work requiring substantial reasoning. Use the named role so its model and effort apply. Unclassified children use the configured Luna fallback.
+- When the spawn tool has no native role selector (for example `collaboration.spawn_agent`), read the selected `~/.codex/agents/<role>.toml` and use a fresh-context spawn (`fork_turns = "none"`) with its explicit model, reasoning effort, and scoped instructions. Full-history forks inherit the primary model and effort despite the cheap fallback. Do not claim role-file tool or permission restrictions are enforced on this path; keep GUI interaction with the primary, and use a read-only parent session for delegated personal-computer inspection.
+- Route by uncertainty, reasoning difficulty, architectural impact, context breadth, safety, verification difficulty, and total subscription consumption. Reassess as uncertainty clears; file count, domain, duration, and superficial size do not determine the tier.
+- Resolve consequential ambiguity and architecture yourself. Give each worker only relevant context, a bounded assignment, allowed actions, and completion evidence. Workers report ambiguity and recommend escalation to you; they do not spawn agents.
+- Keep substantial low-ambiguity exploration out of primary context when practical. Run independent packets concurrently within the configured limit; assign separate files and mutable resources. Integrate and verify concise worker results.
+- Treat personal-computer inspection and modification separately. Recommendations to delete are not authorization. Obtain explicit authorization before consequential deletion, uninstalling, resets, dependency/SDK removal, backup/runtime removal, emptying Trash, or changes to protected system state. Avoid unrelated private data and credentials.
+- Check the child's actual tool surface and effective permissions before assigning GUI work. Read-only shell restrictions do not sandbox MCP or GUI actions, and live parent overrides can replace role defaults. Keep GUI interaction with the primary when child access or safe read-only behavior is unconfirmed; delegate separable analysis instead. Use task instructions for domain procedures and repository instructions for repository conventions.
 
 ---
 
