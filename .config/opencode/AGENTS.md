@@ -18,7 +18,7 @@
 
 - Load relevant skills before work.
 - Delegate broad exploration and independent research when suitable subagents exist.
-- Use one browser owner per task. Default to `agent-browser`; use `browser-use` for authenticated profile workflows and `chrome-devtools` for deep debugging. Load the relevant skill first.
+- Use one browser owner per task. Use `agent-browser` for browser interaction, including authenticated Chrome/profile workflows, and `chrome-devtools` only for deep-debugging escalation. Load the relevant skill first.
 
 ## Test resource lifecycle
 

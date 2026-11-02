@@ -65,9 +65,6 @@ fi
 if [ -d "$HOME/.antigravity-ide/antigravity-ide/bin" ]; then
     PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
 fi
-if [ -d "$HOME/.browser-use-env/bin" ]; then
-    PATH="$HOME/.browser-use-env/bin:$PATH"
-fi
 if [ $machine = "mac" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi

@@ -2,11 +2,11 @@
 name: chrome-devtools
 description: >-
   Uses the `chrome-devtools` CLI as a browser debugging escalation path. Use
-  when deeper inspection is needed after `agent-browser` or `browser-use`,
+  when deeper inspection is needed after `agent-browser`,
   including network requests, console/runtime inspection, performance traces,
   Lighthouse, heap snapshots, or attaching DevTools commands to an existing
   debuggable Chrome session.
-allowed-tools: Bash(chrome-devtools:*), Bash(agent-browser:*), Bash(browser-use:*)
+allowed-tools: Bash(chrome-devtools:*), Bash(agent-browser:*)
 ---
 
 # Chrome DevTools CLI
@@ -18,9 +18,9 @@ This skill replaces the OpenCode Chrome DevTools MCP integration with a shell-ba
 ## Routing
 
 - Use `agent-browser` first for local app QA, UI verification, bug reproduction, screenshots, snapshots, and deterministic interaction.
-- Use `browser-use` only for Computer Use-style tasks that require the user's existing authenticated Chrome profile.
+- Use `agent-browser` for existing authenticated Chrome/profile workflows too.
 - Use `chrome-devtools` only as an escalation path for deep debugging.
-- Do not use `chrome-devtools` as a second browser owner when `agent-browser` or `browser-use` already owns the task.
+- Do not use `chrome-devtools` as a second browser owner when `agent-browser` already owns the task.
 - Do not run multiple controllers against the same authenticated profile at the same time unless the user explicitly asks.
 
 ## Start Or Attach
@@ -50,7 +50,7 @@ agent-browser get cdp-url
 chrome-devtools start --wsEndpoint <cdp-url>
 ```
 
-For `browser-use`, attach only if the current browser exposes a CDP endpoint, commonly after the user has enabled Chrome remote debugging and `browser-use connect` is using that Chrome instance. Do not export cookies or auth state just to move a credentialed session between tools.
+Attach only to an available debugging endpoint. Do not export cookies or auth state just to move a credentialed session between tools.
 
 Stop the daemon when done:
 
@@ -105,4 +105,4 @@ chrome-devtools lighthouse_audit --mode navigation --device desktop
 
 ## Escalation Test
 
-Before using this skill, state the concrete reason `agent-browser` or `browser-use` is insufficient. If the reason is only "click/fill/screenshot/navigate," use the owning browser tool instead.
+Before using this skill, state the concrete reason `agent-browser` is insufficient. If the reason is only "click/fill/screenshot/navigate," use the owning browser tool instead.
