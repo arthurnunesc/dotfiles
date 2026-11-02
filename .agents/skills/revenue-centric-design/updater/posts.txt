@@ -1,7 +1,7 @@
 # One X/Twitter post URL per line. Blank lines and #comments are ignored.
 #
 # TEST: leave a single URL below to do the one-post smoke test.
-# FULL RUN: paste all 91 URLs (order is preserved), then re-run the same command.
+# FULL RUN: keep all 136 URLs below (order is preserved), then re-run the same command.
 #
 # Accepts any of:
 #   https://x.com/username/status/1234567890123456789
@@ -111,3 +111,38 @@ https://x.com/richardrx/status/2069382946214080985
 https://x.com/richardrx/status/2067987722954735812
 https://x.com/richardrx/status/2067591574138052804
 https://x.com/richardrx/status/2066476811177877962
+https://x.com/richardrx/status/2087502085151424711
+https://x.com/richardrx/status/2086931878251057479
+https://x.com/richardrx/status/2085056354360729949
+https://x.com/richardrx/status/2084589988843299217
+https://x.com/richardrx/status/2084250609687884144
+https://x.com/richardrx/status/2081714430811730162
+https://x.com/richardrx/status/2079575881115226453
+https://x.com/richardrx/status/2078079228717764886
+https://x.com/richardrx/status/2075623473565647202
+https://x.com/richardrx/status/2075192130184630688
+https://x.com/richardrx/status/2074814716824731651
+https://x.com/richardrx/status/2074539418266812580
+https://x.com/richardrx/status/2074118439321350163
+https://x.com/richardrx/status/2072718071060447691
+https://x.com/richardrx/status/2071546806987538924
+https://x.com/richardrx/status/2069743203863962080
+https://x.com/richardrx/status/2062314549483589691
+https://x.com/richardrx/status/2062127283977019757
+https://x.com/richardrx/status/2060409264683044995
+https://x.com/richardrx/status/2037543117612630126
+https://x.com/richardrx/status/2034571753263939621
+https://x.com/richardrx/status/2010675817483817384
+https://x.com/richardrx/status/2007216871607771303
+https://x.com/richardrx/status/2003495704849760387
+https://x.com/richardrx/status/2002076748112875558
+https://x.com/richardrx/status/2001408166404530231
+https://x.com/richardrx/status/2000930776636940333
+https://x.com/richardrx/status/1999584679247134761
+https://x.com/richardrx/status/1998432350842016222
+https://x.com/richardrx/status/1987842649261261240
+https://x.com/richardrx/status/1986836679953719632
+https://x.com/richardrx/status/1985828780838097317
+https://x.com/richardrx/status/1985681720104903142
+https://x.com/richardrx/status/1985329704312709254
+https://x.com/richardrx/status/2092692547244007852

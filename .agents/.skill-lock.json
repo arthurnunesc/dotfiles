@@ -171,11 +171,11 @@
       "source": "mattpocock/skills",
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "ref": "49dd158d1076134a641b33efb035946536778336",
       "skillPath": "skills/engineering/to-tickets/SKILL.md",
-      "skillFolderHash": "3d8bb99bb91b9203c90bac852302facb58ac63a0",
-      "pluginName": "mattpocock-skills",
+      "skillFolderHash": "2dee20ad722a31c04ededf9f2d83842473573045",
       "installedAt": "2026-08-17T21:16:01.333Z",
-      "updatedAt": "2026-08-17T21:16:01.333Z"
+      "updatedAt": "2026-11-02T11:20:55.458Z"
     },
     "triage": {
       "source": "mattpocock/skills",
@@ -241,11 +241,11 @@
       "source": "mattpocock/skills",
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "ref": "49dd158d1076134a641b33efb035946536778336",
       "skillPath": "skills/productivity/teach/SKILL.md",
-      "skillFolderHash": "15f8c86d39ef834e643d092733ca899b59049067",
-      "pluginName": "mattpocock-skills",
+      "skillFolderHash": "3fd617b610e59acbb99644de1ef37e394ff53cd1",
       "installedAt": "2026-08-17T21:16:01.335Z",
-      "updatedAt": "2026-08-17T21:16:01.335Z"
+      "updatedAt": "2026-11-02T11:20:52.047Z"
     },
     "to-questionnaire": {
       "source": "mattpocock/skills",
@@ -313,6 +313,16 @@
       "skillFolderHash": "7d77d76815e6deb704427f17f6e393f55e3cb6da",
       "installedAt": "2026-10-17T11:47:35.307Z",
       "updatedAt": "2026-10-17T11:47:35.307Z"
+    },
+    "revenue-centric-design": {
+      "source": "heliocosta-dev/revenue-centric-design",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heliocosta-dev/revenue-centric-design.git",
+      "ref": "1942760c2242f609bf63ce2c97204f5a1791bd68",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "1942760c2242f609bf63ce2c97204f5a1791bd68",
+      "installedAt": "2026-11-02T11:20:47.090Z",
+      "updatedAt": "2026-11-02T11:20:47.090Z"
     }
   },
   "dismissed": {

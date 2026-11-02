@@ -42,13 +42,15 @@ to `references/<slug>.md`:
 | slug | covers |
 |---|---|
 | conversion-and-landing-pages | hero/copy, CTAs, social proof, awareness levels, CRO |
+| checkout-and-forms | checkout, signup/lead forms, cart abandonment, field friction, trust signals |
 | onboarding-and-activation | empty states, aha moment, TTV, activation, trials |
 | revenue-centric-design | design philosophy, the RCD principles, process & method |
 | pricing-and-monetization | decoy/anchoring, GBB, trial-with-card, upgrades |
 | churn-and-retention | cancellation UX, expectation debt, NRR, jobs-to-be-done |
+| dashboards-and-data-viz | dashboards, KPIs, data visualization, actionable panels, F-pattern |
 | behavioral-science-toolkit | the cross-cutting cognitive biases & persuasion levers |
 | product-strategy-and-features | Swiss Knife Index, feature adoption, attention hierarchy |
-| positioning-icp-and-gtm | ICP, niche, PLG, Bullseye, first customers, distribution |
+| positioning-icp-and-gtm | ICP, niche, TAM/SAM/SOM, PLG, Bullseye, first customers, distribution |
 | ai-era-differentiation | moats, commoditization, vibe-coding pitfalls |
 | metrics-and-experimentation | A/B rigor, vanity metrics, churn→LTV math |
 

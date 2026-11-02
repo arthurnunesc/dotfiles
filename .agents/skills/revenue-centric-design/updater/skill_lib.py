@@ -24,13 +24,15 @@ CHANGELOG = REPO / "CHANGELOG.md"
 
 AUTHOR = "richardrx"
 
-# The 10 curated themes: (slug == references/<slug>.md, human title).
+# The 12 curated themes: (slug == references/<slug>.md, human title).
 THEMES = [
     ("conversion-and-landing-pages", "Conversion & Landing Pages"),
+    ("checkout-and-forms", "Checkout & Forms"),
     ("onboarding-and-activation", "Onboarding & Activation"),
     ("revenue-centric-design", "Revenue-Centric Design"),
     ("pricing-and-monetization", "Pricing & Monetization"),
     ("churn-and-retention", "Churn & Retention"),
+    ("dashboards-and-data-viz", "Dashboards & Data Visualization"),
     ("behavioral-science-toolkit", "Behavioral Science Toolkit"),
     ("product-strategy-and-features", "Product Strategy & Features"),
     ("positioning-icp-and-gtm", "Positioning, ICP & GTM"),

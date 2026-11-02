@@ -31,10 +31,11 @@ RANK_MODEL = "claude-opus-4-8"
 
 SCOPE = (
     "The skill 'Revenue-Centric Design' curates @richardrx's product-design wisdom for "
-    "SaaS/startups: conversion & landing pages, onboarding/activation, churn/retention, "
-    "pricing & monetization psychology, behavioral-science tactics, product/feature "
-    "strategy, positioning/ICP/go-to-market, AI-era differentiation, and "
-    "metrics/experimentation. OFF-topic = purely personal, life updates, memes, "
+    "SaaS/startups: conversion & landing pages, checkout/forms, onboarding/activation, "
+    "churn/retention, pricing & monetization psychology, dashboards/data visualization, "
+    "behavioral-science tactics, product/feature strategy, positioning/ICP/go-to-market, "
+    "AI-era differentiation, and metrics/experimentation. OFF-topic = purely personal, "
+    "life updates, memes, "
     "politics, banter with no product/design lesson, or promos with no reusable insight."
 )
 

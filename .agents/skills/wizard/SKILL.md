@@ -11,6 +11,12 @@ The delightful UX is already solved by [template.sh](template.sh) — stage-by-s
 
 A wizard is ephemeral by default — built for one run, saved to a scratch or `scripts/` path, deleted when the job's done. Commit it only when the user wants a repeatable setup path that should live in the repo.
 
+## Environment file limits
+
+The helpers support a conservative dotenv subset, not general dotenv or shell syntax. The reader must be a dotenv parser configured **without interpolation**; never source the file as shell code. Supported records are blank lines, comments (optional leading whitespace), and `KEY=value` assignments with keys matching `[A-Za-z_][A-Za-z0-9_]*`. Plain values may contain only ASCII letters, digits, `_ . / : @ % + , -` (without spaces). Single-quoted values may span lines and contain literal characters, including `$`, backticks, and `#`; the only supported escapes are `\\` for a backslash and `\'` for an apostrophe. Carriage returns and NUL bytes are unsupported.
+
+Existing files outside this subset, including double quotes, interpolation syntax in plain values, `export`, spaces around `=`, trailing comments or other trailing text, invalid escapes, and unterminated quotes, are rejected before writing. Convert such a file deliberately before using the wizard. Unrelated supported records are preserved; a missing final newline is normalized. New values are single-quoted and escaped. Writes preserve existing permissions and follow an existing symlink; new files are created with mode 0600. Writes are not atomic and require exclusive access to the file while the wizard runs.
+
 ## Process
 
 ### 1. Scope the procedure

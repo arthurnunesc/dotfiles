@@ -32,7 +32,8 @@ SKIPPED=()        # things we couldn't do (e.g. gh missing)
 # output isn't a terminal, so piped logs stay readable.
 _clear() {
   [[ -t 1 ]] || return 0
-  if command -v tput >/dev/null 2>&1; then tput clear; else printf '\033[2J\033[3J\033[H'; fi
+  if command -v tput >/dev/null 2>&1 && tput clear 2>/dev/null; then return 0; fi
+  printf '\033[2J\033[3J\033[H'
 }
 
 # banner "Title" — opening frame: what this wizard does.
@@ -70,14 +71,14 @@ open_url() {
     elif command -v explorer.exe >/dev/null 2>&1; then explorer.exe "$url"
     elif command -v xdg-open    >/dev/null 2>&1; then xdg-open "$url"
     elif command -v open        >/dev/null 2>&1; then open "$url"
-    else warn "couldn't open a browser — visit it manually: $url"; fi
+    else false; fi
   } >/dev/null 2>&1 || warn "couldn't open a browser — visit it manually: $url"
 }
 
 # pause "msg" — wait for the human to confirm they've done the manual part.
 pause() {
   printf '  %s%s%s ' "$DIM" "${1:-Press Enter to continue}" "$RESET"
-  read -r _ || true
+  read -r _
 }
 
 # confirm "question" — y/N gate; returns success on yes.
@@ -88,52 +89,148 @@ confirm() {
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY — current value of KEY in ENV_FILE, if any.
+# The supported dotenv subset is documented in SKILL.md. Never source it.
+# Arrays hold complete records, including embedded newlines, without evaluation.
+_env_read() {
+  local line raw key value rest char next i state=0 probe LC_ALL=C
+  _ENV_RAW=() _ENV_KEYS=() _ENV_VALUES=()
+  [[ -e "$ENV_FILE" || -L "$ENV_FILE" ]] || return 0
+  if [[ ! -f "$ENV_FILE" || ! -r "$ENV_FILE" ]]; then
+    printf '  Cannot read dotenv file.\n' >&2; return 2
+  fi
+  # Bash strings cannot represent NUL. Reject it rather than dropping bytes.
+  if IFS= read -r -d '' probe < "$ENV_FILE"; then
+    printf '  Unsupported dotenv syntax.\n' >&2; return 2
+  fi
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" == *$'\r'* ]]; then
+      printf '  Unsupported dotenv syntax.\n' >&2; return 2
+    fi
+    if (( state )); then
+      raw="$raw"$'\n'"$line"
+      value="$value"$'\n'
+      rest="$line"
+    else
+      raw="$line" key='' value=''
+      if [[ "$line" =~ ^[[:space:]]*(#.*)?$ ]]; then
+        _ENV_RAW+=("$raw") _ENV_KEYS+=('') _ENV_VALUES+=('')
+        continue
+      fi
+      if [[ ! "$line" =~ ^[a-zA-Z_][a-zA-Z0-9_]*= ]]; then
+        printf '  Unsupported dotenv syntax.\n' >&2; return 2
+      fi
+      key=${line%%=*}; rest=${line#*=}
+      if [[ "${rest:0:1}" != "'" ]]; then
+        if [[ ! "$rest" =~ ^[a-zA-Z0-9_./:@%+,\-]*$ ]]; then
+          printf '  Unsupported dotenv syntax.\n' >&2; return 2
+        fi
+        _ENV_RAW+=("$raw") _ENV_KEYS+=("$key") _ENV_VALUES+=("$rest")
+        continue
+      fi
+      state=1; rest=${rest:1}
+    fi
+    i=0
+    while (( i < ${#rest} )); do
+      char=${rest:i:1}
+      if [[ "$char" == "'" ]]; then
+        if (( i + 1 != ${#rest} )); then
+          printf '  Unsupported dotenv syntax.\n' >&2; return 2
+        fi
+        state=0; break
+      elif [[ "$char" == '\' ]]; then
+        (( i += 1 ))
+        if (( i >= ${#rest} )); then
+          printf '  Unsupported dotenv syntax.\n' >&2; return 2
+        fi
+        next=${rest:i:1}
+        if [[ "$next" != '\' && "$next" != "'" ]]; then
+          printf '  Unsupported dotenv syntax.\n' >&2; return 2
+        fi
+        value="$value$next"
+      else
+        value="$value$char"
+      fi
+      (( i += 1 ))
+    done
+    if (( ! state )); then
+      _ENV_RAW+=("$raw") _ENV_KEYS+=("$key") _ENV_VALUES+=("$value")
+    fi
+  done < "$ENV_FILE"
+  if (( state )); then
+    printf '  Unsupported dotenv syntax.\n' >&2; return 2
+  fi
+}
+
+# _existing KEY — decoded value in _EXISTING_VALUE; 1 means absent, 2 invalid.
 _existing() {
-  [[ -f "$ENV_FILE" ]] || return 1
-  local line; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
-  printf '%s' "${line#*=}"
+  local i found=1
+  _EXISTING_VALUE=''
+  [[ "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || return 2
+  _env_read || return 2
+  for (( i=0; i<${#_ENV_KEYS[@]}; i++ )); do
+    if [[ "${_ENV_KEYS[i]}" == "$1" ]]; then
+      _EXISTING_VALUE=${_ENV_VALUES[i]}; found=0
+    fi
+  done
+  return "$found"
 }
 
 # ask KEY "Prompt" — read a value into $KEY. Offers the existing .env value as
 # a default on re-runs (Enter keeps it). Visible input (non-secret).
 ask() {
-  local key="$1" prompt="$2" current input
-  current=$(_existing "$key" || true)
+  local key="$1" prompt="$2" current input="" rc=0 status
+  if _existing "$key"; then current=$_EXISTING_VALUE
+  else status=$?; (( status == 1 )) || return "$status"; current=''; fi
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
   else
     printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
   fi
-  read -r input || true
+  read -r input || rc=1
+  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
   [[ -z "$input" && -n "$current" ]] && input="$current"
   printf -v "$key" '%s' "$input"
 }
 
 # ask_secret KEY "Prompt" — like ask, but input is hidden.
 ask_secret() {
-  local key="$1" prompt="$2" current input
-  current=$(_existing "$key" || true)
+  local key="$1" prompt="$2" current input="" rc=0 status
+  if _existing "$key"; then current=$_EXISTING_VALUE
+  else status=$?; (( status == 1 )) || return "$status"; current=''; fi
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
   else
     printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
   fi
-  read -rs input || true
+  read -rs input || rc=1
   printf '\n'
+  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
   [[ -z "$input" && -n "$current" ]] && input="$current"
   printf -v "$key" '%s' "$input"
 }
 
-# write_env KEY VALUE — upsert KEY=VALUE into ENV_FILE (creates it; replaces
-# any existing line). Idempotent.
+# write_env KEY VALUE — validate first, then replace complete matching records.
 write_env() {
-  local key="$1" value="$2" tmp
-  touch "$ENV_FILE"
-  tmp=$(mktemp)
-  grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf '%s=%s\n' "$key" "$value" >> "$tmp"
-  mv "$tmp" "$ENV_FILE"
+  local key="$1" value="$2" encoded i
+  if [[ ! "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ || "$value" == *$'\r'* ]]; then
+    printf '  Invalid dotenv key or value.\n' >&2; return 2
+  fi
+  _env_read || return 2
+  encoded=${value//\\/\\\\}; encoded=${encoded//\'/\\\'}
+  # A subshell owns the temporary file and removes it on success or failure.
+  (
+    umask 077
+    tmp=$(mktemp "${ENV_FILE}.tmp.XXXXXXXX") || exit 1
+    trap 'rm -f -- "$tmp"' EXIT
+    trap 'exit 1' HUP INT TERM
+    {
+      for (( i=0; i<${#_ENV_RAW[@]}; i++ )); do
+        [[ "${_ENV_KEYS[i]}" == "$key" ]] || printf '%s\n' "${_ENV_RAW[i]}" || exit 1
+      done
+      printf "%s='%s'\n" "$key" "$encoded"
+    } > "$tmp" || exit 1
+    cat "$tmp" > "$ENV_FILE" || exit 1
+  ) || return 1
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
 }
