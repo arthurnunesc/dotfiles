@@ -1,4 +1,4 @@
-# CONTEXT.md Format
+# GLOSSARY.md Format
 
 ## Structure
 
@@ -31,18 +31,18 @@ _Avoid_: Client, buyer, account
 
 ## Single vs multi-context repos
 
-**Single context (most repos):** One `CONTEXT.md` at the repo root.
+**Single context (most repos):** One `GLOSSARY.md` at the repo root.
 
-**Multiple contexts:** A `CONTEXT-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
+**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
 
 ```md
 # Context Map
 
 ## Contexts
 
-- [Ordering](./src/ordering/CONTEXT.md) — receives and tracks customer orders
-- [Billing](./src/billing/CONTEXT.md) — generates invoices and processes payments
-- [Fulfillment](./src/fulfillment/CONTEXT.md) — manages warehouse picking and shipping
+- [Ordering](./src/ordering/GLOSSARY.md) — receives and tracks customer orders
+- [Billing](./src/billing/GLOSSARY.md) — generates invoices and processes payments
+- [Fulfillment](./src/fulfillment/GLOSSARY.md) — manages warehouse picking and shipping
 
 ## Relationships
 
@@ -53,8 +53,9 @@ _Avoid_: Client, buyer, account
 
 The skill infers which structure applies:
 
-- If `CONTEXT-MAP.md` exists, read it to find contexts
-- If only a root `CONTEXT.md` exists, single context
-- If neither exists, create a root `CONTEXT.md` lazily when the first term is resolved
+- Prefer `GLOSSARY-MAP.md`, falling back to legacy `CONTEXT-MAP.md`, to find contexts.
+- In each context, prefer `GLOSSARY.md`; if absent, read and update the existing legacy `CONTEXT.md`.
+- If no map exists, use the root glossary with the same preference and fallback. If neither glossary exists, create root `GLOSSARY.md` lazily when the first term is resolved.
+- Do not rename or migrate legacy files implicitly, or create a competing glossary. If both names exist, prefer the `GLOSSARY` file.
 
 When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
