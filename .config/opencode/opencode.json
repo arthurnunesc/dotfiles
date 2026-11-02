@@ -212,6 +212,12 @@
       ],
       "enabled" : true,
       "type" : "local"
+    },
+    "servers": {
+      "home-assistant": {
+        "type": "remote",
+        "url": "https://homeassistant.arthurnun.es/api/mcp"
+      }
     }
   },
   "model" : "openai/gpt-6.1-sol",
