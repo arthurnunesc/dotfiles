@@ -2,17 +2,17 @@
 name: revenue-centric-design
 description: >-
   Playbook for designing SaaS and startup products that convert, retain, and monetize —
-  landing pages & CRO, onboarding/activation, churn reduction, pricing psychology,
-  behavioral-science tactics, feature discipline, positioning/ICP, go-to-market, and
-  AI-era differentiation. Use when advising on product design, UX, conversion, landing
-  pages, onboarding, trials, pricing, retention/churn, growth, or positioning for a
-  startup or SaaS. Distilled from product designer Richard (@richardrx). Not for use on
-  gambling, betting, or casino products.
+  landing pages & CRO, checkout & forms, onboarding/activation, churn reduction, pricing
+  psychology, dashboards, behavioral-science tactics, feature discipline, positioning/ICP,
+  go-to-market, and AI-era differentiation. Use when advising on product design, UX,
+  conversion, landing pages, checkout, onboarding, trials, pricing, retention/churn,
+  growth, or positioning for a startup or SaaS. Distilled from product designer Richard
+  (@richardrx). Not for use on gambling, betting, or casino products.
 ---
 
 # Revenue-Centric Design
 
-A distilled playbook of **101 principles** from **Richard ([@richardrx](https://x.com/richardrx), "Design for startups")** —
+A distilled playbook of **134 principles** from **Richard ([@richardrx](https://x.com/richardrx), "Design for startups")** —
 a product designer specializing in conversion-rate optimization, churn reduction, and applied
 behavioral science (ex-Volkswagen, PayPal, IBM). The throughline is his coined philosophy,
 **Revenue-Centric Design (RCD)**: design decisions should serve the user _and_ the business —
@@ -61,13 +61,15 @@ gambling/betting/casino use. This is a hard constraint set by the author, not a 
 | When the question is about…                                                   | Open                                                                         |
 | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | Landing pages, hero/copy, CTAs, social proof, awareness levels, CRO           | [conversion-and-landing-pages](references/conversion-and-landing-pages.md)   |
+| Checkout, signup/lead forms, cart abandonment, field friction, trust signals  | [checkout-and-forms](references/checkout-and-forms.md)                       |
 | First-run, empty states, aha moment, TTV, activation, trial-as-onboarding     | [onboarding-and-activation](references/onboarding-and-activation.md)         |
 | Cancellation, retention, expectation debt, NRR, jobs-to-be-done, support load | [churn-and-retention](references/churn-and-retention.md)                     |
 | Pricing tables, decoy/anchoring, GBB, trial-with-card, upgrade paths          | [pricing-and-monetization](references/pricing-and-monetization.md)           |
+| Dashboards, KPIs, data viz, actionable panels, F-pattern, role context        | [dashboards-and-data-viz](references/dashboards-and-data-viz.md)             |
 | Cognitive biases & persuasion tactics (cross-cutting toolkit)                 | [behavioral-science-toolkit](references/behavioral-science-toolkit.md)       |
 | Feature scope, Swiss Knife Index, feature adoption, attention hierarchy       | [product-strategy-and-features](references/product-strategy-and-features.md) |
 | Design philosophy, the RCD principles, design process & method                | [revenue-centric-design](references/revenue-centric-design.md)               |
-| ICP, niche, founder-fit, distribution, PLG, Bullseye, first customers         | [positioning-icp-and-gtm](references/positioning-icp-and-gtm.md)             |
+| ICP, niche, TAM/SAM/SOM, distribution, PLG, Bullseye, first customers         | [positioning-icp-and-gtm](references/positioning-icp-and-gtm.md)             |
 | Differentiating in the AI era, moats, commoditization                         | [ai-era-differentiation](references/ai-era-differentiation.md)               |
 | A/B testing rigor, vanity metrics, churn→LTV math, signal quality             | [metrics-and-experimentation](references/metrics-and-experimentation.md)     |
 
@@ -75,6 +77,6 @@ Informational diagrams and screenshots referenced by the principles live in `ass
 
 ## Provenance
 
-101 curated posts by [@richardrx](https://x.com/richardrx), extracted with a valid X API key and
+136 curated posts by [@richardrx](https://x.com/richardrx), extracted with a valid X API key and
 distilled **with the author's permission**, translated from Portuguese to English. Every principle
 links back to its source post. Reuse is subject to the gambling/betting/casino exclusion above.

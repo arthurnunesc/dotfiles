@@ -59,28 +59,46 @@ Handle transient failures with exponential backoff.
 ### Exponential Backoff
 
 ```typescript
-async function sendWithRetry(emailData, maxRetries = 3) {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+async function sendWithRetry(emailData, idempotencyKey, maxAttempts = 3) {
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
+    throw new RangeError('maxAttempts must be a positive integer');
+  }
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    let result;
     try {
-      return await resend.emails.send(emailData);
+      result = await resend.emails.send(emailData, { idempotencyKey });
     } catch (error) {
-      if (!isRetryable(error) || attempt === maxRetries - 1) {
+      // Transport failures can reject; API failures normally return error.
+      if (!isRetryable(error) || attempt === maxAttempts - 1) {
         throw error;
       }
-      const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
-      await sleep(delay + Math.random() * 1000); // Add jitter
+      await backoff(attempt);
+      continue;
     }
+    if (!result.error) return result.data;
+    if (!isRetryable(result.error) || attempt === maxAttempts - 1) {
+      throw result.error;
+    }
+    await backoff(attempt);
   }
 }
 
 function isRetryable(error) {
-  return error.statusCode >= 500 ||
-         error.statusCode === 429 ||
-         error.code === 'ETIMEDOUT';
+  const code = error?.code ?? error?.cause?.code;
+  return (error?.statusCode >= 500 && error.statusCode < 600) ||
+         error?.statusCode === 429 ||
+         ['ETIMEDOUT', 'ECONNRESET', 'EAI_AGAIN'].includes(code);
+}
+
+function backoff(attempt) {
+  const delay = Math.min(1000 * 2 ** attempt, 30000);
+  return new Promise(resolve => setTimeout(resolve, delay + Math.random() * 1000));
 }
 ```
 
-**Backoff schedule:** 1s → 2s → 4s → 8s (with jitter to prevent thundering herd)
+Three total attempts remain the default, with 1s and 2s waits plus jitter.
+Reuse the same business-event idempotency key on every attempt. Honor any
+documented rate-limit retry delay when available; do not invent an SDK field.
 
 ## Error Handling
 
@@ -100,20 +118,25 @@ function isRetryable(error) {
 ### Error Handling Pattern
 
 ```typescript
-try {
-  const result = await resend.emails.send(emailData);
-  await logSuccess(result.id, emailData);
-} catch (error) {
+const { data, error } = await resend.emails.send(emailData, { idempotencyKey });
+
+if (error) {
   if (error.statusCode === 429) {
-    await queueForRetry(emailData, error.retryAfter);
+    await queueForRetry(emailData);
   } else if (error.statusCode >= 500) {
     await queueForRetry(emailData);
   } else {
     await logFailure(error, emailData);
     await alertOnCriticalEmail(emailData); // For password resets, etc.
   }
+} else {
+  await logSuccess(data.id, emailData);
 }
 ```
+
+The SDK returns API failures through `error`; `try/catch` alone misses those
+failures. Transport failures may still reject. Handle those at the caller or
+use the retry helper above. Preserve the original idempotency key in queued jobs.
 
 ## Queuing for Reliability
 
@@ -136,16 +159,12 @@ For critical emails, use a queue to ensure delivery even if the initial send fai
 
 Set appropriate timeouts to avoid hanging requests.
 
-```typescript
-const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 10000);
-
-try {
-  await resend.emails.send(emailData, { signal: controller.signal });
-} finally {
-  clearTimeout(timeout);
-}
-```
+Use the timeout/abort mechanism documented for the installed SDK or its HTTP
+transport. Do not assume `resend.emails.send` forwards a `signal` option.
+For a direct `fetch` request, pass `signal: AbortSignal.timeout(10000)` in its
+request options; `AbortSignal.timeout` is a static method, not a constructor.
+A `Promise.race` timeout alone does not cancel the underlying send. After an
+ambiguous timeout, retry only with the original idempotency key.
 
 **Recommended:** 10-30 seconds for email API calls.
 

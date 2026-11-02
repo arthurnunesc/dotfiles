@@ -47,9 +47,10 @@ def build_ops(updated: datetime.date | None):
          f"index of {posts} of his public X posts"),  # README provenance count
     ]
     for slug, count in t["principle_counts"].items():
+        # The table is prettier-aligned, so tolerate any padding around the pipe.
         readme.append(
-            (r"(\(references/" + re.escape(slug) + r"\.md\) \| )\d+( \|)",
-             r"\g<1>" + str(count) + r"\g<2>"))
+            (r"(\(references/" + re.escape(slug) + r"\.md\)[^|\n]*\|[ \t]*)\d+",
+             r"\g<1>" + str(count)))
 
     skill = [
         (r"\*\*\d+ principles\*\*", f"**{P} principles**"),
