@@ -104,7 +104,7 @@ enabled = true
 enabled = true
 
 [mcp_servers.engram]
-command = "/opt/homebrew/bin/engram"
+command = "engram"
 args = [ "mcp", "--tools=agent" ]
 
 [mcp_servers.context7]
