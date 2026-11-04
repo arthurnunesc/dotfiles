@@ -13,6 +13,24 @@
 !.config/zsh/
 !.config/zsh/.zshrc
 
+# Private agent keys: track only the loader and safe example.
+!.config/agent-secrets/
+.config/agent-secrets/secrets.env
+.config/agent-secrets/*.tmp
+!.config/agent-secrets/load.sh
+!.config/agent-secrets/secrets.env.example
+
+# Explicit user service drop-ins for agent key injection.
+!.config/systemd/
+!.config/systemd/user/
+!.config/systemd/user/opencode-autostart.service.d/
+!.config/systemd/user/opencode-autostart.service.d/50-agent-secrets.conf
+!.config/systemd/user/t3code.service.d/
+!.config/systemd/user/t3code.service.d/50-agent-secrets.conf
+
+# Bash login profile
+!.bash_profile
+
 # Local scripts
 !.local/
 !.local/bin/

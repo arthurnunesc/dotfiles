@@ -110,6 +110,7 @@ args = [ "mcp", "--tools=agent" ]
 [mcp_servers.context7]
 command = "npx"
 args = [ "-y", "@upstash/context7-mcp" ]
+env_vars = ["CONTEXT7_API_KEY"]
 
 [mcp_servers.flyctl]
 command = "/opt/homebrew/bin/fly"

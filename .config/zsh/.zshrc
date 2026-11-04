@@ -26,6 +26,11 @@ if [ $machine = "mac" ]; then
   export BITWARDEN_ACCESS_TOKEN="$(security find-generic-password -s bitwarden-varlock-token -w 2>/dev/null)"
 fi
 
+# Load private agent keys in new interactive shells when configured.
+if [ -r "$HOME/.config/agent-secrets/load.sh" ]; then
+  . "$HOME/.config/agent-secrets/load.sh"
+fi
+
 # Node/nvm config
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
