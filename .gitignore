@@ -35,6 +35,14 @@
 !.local/
 !.local/bin/
 !.local/bin/print-ai-cli-tools
+!.local/bin/engram-mcp
+
+# Shared Engram routing source, not memory databases or runtime state.
+!.config/engram/
+!.config/engram/t3-project.mjs
+!.config/engram/README.md
+!.config/engram/tests/
+!.config/engram/tests/t3-project.test.mjs
 
 # Starship
 !.config/starship/

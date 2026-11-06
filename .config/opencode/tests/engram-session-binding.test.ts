@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test"
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
 
 import { Engram } from "../plugins/engram"
 
@@ -20,6 +23,7 @@ function response(status: number, body: unknown) {
 function createHarness(options: {
 	fetch: (path: string, init?: RequestInit) => Response | Promise<Response>
 	sessions?: Record<string, { parentID?: string; title?: string } | "missing">
+	directory?: string
 }) {
 	const transforms: Array<(editor: ReturnType<typeof editorFor>) => void> = []
 	const sessionHooks = new Map<string, (event: any) => unknown>()
@@ -28,7 +32,7 @@ function createHarness(options: {
 	const controller = new AbortController()
 
 	const ctx = {
-		location: { directory: "/workspace/v0-rent-comparison-site" },
+		location: { directory: options.directory ?? "/workspace/v0-rent-comparison-site" },
 		event: {
 			subscribe: ({ signal }: { signal: AbortSignal }) => ({
 				async *[Symbol.asyncIterator]() {
@@ -95,6 +99,126 @@ afterEach(() => {
 })
 
 describe("Engram OpenCode V2 session binding", () => {
+	test("uses the scratch MCP default for HTTP registration, prompts and compaction", async () => {
+		const fixture = mkdtempSync(join(tmpdir(), "engram-plugin-scratch-"))
+		const previousT3Home = process.env.T3CODE_HOME
+		const previousProject = process.env.ENGRAM_PROJECT
+		let harness: ReturnType<typeof createHarness> | undefined
+		let cleanup: (() => Promise<void> | void) | void = undefined
+		try {
+			process.env.T3CODE_HOME = fixture
+			delete process.env.ENGRAM_PROJECT
+			const directory = join(fixture, "scratch", "chat-one")
+			mkdirSync(directory, { recursive: true })
+			const requests: Array<{ path: string; body?: any }> = []
+			globalThis.fetch = (async (input, init) => {
+				const path = String(input)
+				const body = init?.body ? JSON.parse(String(init.body)) : undefined
+				requests.push({ path, body })
+				if (path.endsWith("/health")) return response(200, { ok: true })
+				if (path.includes("/project/current?cwd=")) return response(200, { project: "chat-one" })
+				if (path.endsWith("/sessions")) return response(200, { id: body.id })
+				if (path.endsWith("/sessions/scratch-root")) return response(200, { id: "scratch-root", project: "arthur", directory })
+				if (path.includes("/context?project=")) return response(200, { context: "prior memory" })
+				return response(200, {})
+			}) as typeof fetch
+			harness = createHarness({ fetch: globalThis.fetch, directory })
+			cleanup = await Engram.setup(harness.ctx as never)
+			await harness.sessionHooks.get("prompt")?.({ sessionID: "scratch-root", prompt: { text: "A disposable scratch message" } })
+			const compaction = { sessionID: "scratch-root", system: [] as Array<{ type: string; text: string }> }
+			await harness.sessionHooks.get("compaction")?.(compaction)
+			expect(requests.find((request) => request.path.endsWith("/sessions"))?.body).toMatchObject({
+				id: "scratch-root", project: "arthur", directory,
+			})
+			expect(requests.find((request) => request.path.endsWith("/prompts"))?.body.project).toBe("arthur")
+			expect(requests.some((request) => request.path.endsWith("/context?project=arthur"))).toBe(true)
+			expect(requests.some((request) => request.path.includes("/project/current?cwd="))).toBe(false)
+			expect(compaction.system.at(-1)?.text).toContain("project: 'arthur'")
+			let writes = 0
+			const writer: RegisteredTool = { id: "engram_mem_save", execute: async () => { writes++; return "saved" } }
+			harness.applyTransforms([writer])
+			const executor = { sessionID: "scratch-root", signal: new AbortController().signal }
+			await expect(writer.execute({ session_id: "different-old-root" }, executor)).rejects.toThrow("invoking root session")
+			expect(writes).toBe(0)
+			await expect(writer.execute({ session_id: "scratch-root" }, executor)).resolves.toBe("saved")
+		} finally {
+			if (harness) await harness.stop(cleanup)
+			if (previousT3Home === undefined) delete process.env.T3CODE_HOME
+			else process.env.T3CODE_HOME = previousT3Home
+			if (previousProject === undefined) delete process.env.ENGRAM_PROJECT
+			else process.env.ENGRAM_PROJECT = previousProject
+			rmSync(fixture, { recursive: true, force: true })
+		}
+	})
+
+	test("does not reclassify or write through an older scratch session owner", async () => {
+		const fixture = mkdtempSync(join(tmpdir(), "engram-plugin-stale-"))
+		const previousT3Home = process.env.T3CODE_HOME
+		const previousProject = process.env.ENGRAM_PROJECT
+		let harness: ReturnType<typeof createHarness> | undefined
+		let cleanup: (() => Promise<void> | void) | void = undefined
+		try {
+			process.env.T3CODE_HOME = fixture
+			delete process.env.ENGRAM_PROJECT
+			const directory = join(fixture, "scratch", "chat-old")
+			mkdirSync(directory, { recursive: true })
+			const requests: string[] = []
+			globalThis.fetch = (async (input) => {
+				const path = String(input)
+				requests.push(path)
+				if (path.endsWith("/health")) return response(200, { ok: true })
+				if (path.endsWith("/sessions/old-root")) return response(200, { id: "old-root", project: "chat-old", directory })
+				return response(200, {})
+			}) as typeof fetch
+			harness = createHarness({ fetch: globalThis.fetch, directory })
+			cleanup = await Engram.setup(harness.ctx as never)
+			let writes = 0
+			const writer: RegisteredTool = { id: "engram_mem_save", execute: async () => { writes++; return "saved" } }
+			harness.applyTransforms([writer])
+			await expect(writer.execute({}, { sessionID: "old-root", signal: new AbortController().signal })).rejects.toThrow("could not bind")
+			await expect(writer.execute({ session_id: "old-root" }, { sessionID: "old-root", signal: new AbortController().signal })).rejects.toThrow("could not bind")
+			expect(writes).toBe(0)
+			expect(requests.some((path) => path.endsWith("/sessions"))).toBe(false)
+			expect(requests.some((path) => path.includes("/projects/"))).toBe(false)
+		} finally {
+			if (harness) await harness.stop(cleanup)
+			if (previousT3Home === undefined) delete process.env.T3CODE_HOME
+			else process.env.T3CODE_HOME = previousT3Home
+			if (previousProject === undefined) delete process.env.ENGRAM_PROJECT
+			else process.env.ENGRAM_PROJECT = previousProject
+			rmSync(fixture, { recursive: true, force: true })
+		}
+	})
+
+	test("honors a client project override even when the HTTP server has another default", async () => {
+		const previousProject = process.env.ENGRAM_PROJECT
+		let harness: ReturnType<typeof createHarness> | undefined
+		let cleanup: (() => Promise<void> | void) | void = undefined
+		try {
+			process.env.ENGRAM_PROJECT = "chosen-context"
+			const requests: Array<{ path: string; body?: any }> = []
+			globalThis.fetch = (async (input, init) => {
+				const path = String(input)
+				const body = init?.body ? JSON.parse(String(init.body)) : undefined
+				requests.push({ path, body })
+				if (path.endsWith("/health")) return response(200, { ok: true })
+				if (path.includes("/project/current?cwd=")) return response(200, { project: "server-context" })
+				if (path.endsWith("/sessions")) return response(200, { id: body.id })
+				return response(200, {})
+			}) as typeof fetch
+			harness = createHarness({ fetch: globalThis.fetch })
+			cleanup = await Engram.setup(harness.ctx as never)
+			await harness.sessionHooks.get("prompt")?.({ sessionID: "override-root", prompt: { text: "A disposable override message" } })
+			expect(requests.find((request) => request.path.endsWith("/sessions"))?.body.project).toBe("chosen-context")
+			expect(requests.find((request) => request.path.endsWith("/prompts"))?.body.project).toBe("chosen-context")
+			expect(requests.some((request) => request.path.includes("/project/current?cwd="))).toBe(false)
+		} finally {
+			if (harness) await harness.stop(cleanup)
+			if (previousProject === undefined) delete process.env.ENGRAM_PROJECT
+			else process.env.ENGRAM_PROJECT = previousProject
+		}
+	})
+
 	test("binds concurrent root and Code Mode writer calls to their executor session", async () => {
 		const requests: Array<{ path: string; body?: any }> = []
 		globalThis.fetch = (async (input, init) => {
