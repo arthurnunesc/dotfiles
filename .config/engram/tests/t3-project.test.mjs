@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, copyFileSync, chmodSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, copyFileSync, chmodSync, realpathSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -19,7 +19,7 @@ function fixture(fn) {
     const two = join(scratch, 'two')
     mkdirSync(one, { recursive: true })
     mkdirSync(two)
-    return fn({ home, scratch, one, two, env: { HOME: home, PATH: process.env.PATH } })
+    return fn({ home, scratch, one, two, env: { HOME: home, ENGRAM_DATA_DIR: join(home, 'engram-data'), PATH: process.env.PATH } })
   } finally { rmSync(home, { recursive: true, force: true }) }
 }
 
@@ -42,6 +42,8 @@ test('only physical strict descendants of the configured scratch root qualify', 
   assert.equal(getProject(join(custom, 'scratch', 'child'), { ...env, T3CODE_HOME: custom }), 'arthur')
   assert.equal(getProject(one, { ...env, T3CODE_HOME: 'relative' }), null)
   assert.equal(getProject(one, { ...env, T3CODE_HOME: '  ' }), null)
+  assert.equal(getProject(one, { ...env, T3CODE_HOME: '' }), null)
+  assert.equal(getProject(one, { ...env, GIT_TRACE: '1' }), 'arthur')
 }))
 
 test('preserves inherited project, local config and Git markers', () => fixture(({ home, one, two, env }) => {
@@ -64,11 +66,15 @@ test('preserves inherited project, local config and Git markers', () => fixture(
   mkdirSync(linked)
   writeFileSync(join(linked, '.git'), 'gitdir: /nonexistent\n')
   assert.equal(getProject(linked, env), null)
+  const bare = join(home, '.t3/scratch/bare')
+  const bareInit = spawnSync('git', ['init', '-q', '--bare', bare], { env, encoding: 'utf8' })
+  assert.equal(bareInit.status, 0, bareInit.stderr)
+  assert.equal(getProject(bare, env), null)
   assert.equal(getProject(join(home, '.t3/scratch'), { ...env, PATH: '' }), null)
 }))
 
-test('Git failure is closed and CLI emits only the optional project', () => fixture(({ home, one, env }) => {
-  assert.throws(() => getProject(one, { ...env, PATH: '' }), /Cannot determine Git repository/)
+test('inspector failure is closed and CLI emits only the optional project', () => fixture(({ home, one, env }) => {
+  assert.throws(() => getProject(one, { ...env, PATH: '' }), /Cannot inspect Engram project/)
   const run = (cwd, extra = {}) => spawnSync(process.execPath, [helper], { cwd, env: { ...env, ...extra }, encoding: 'utf8' })
   const selected = run(one)
   assert.equal(selected.status, 0)
@@ -78,11 +84,43 @@ test('Git failure is closed and CLI emits only the optional project', () => fixt
   assert.equal(run(one, { ENGRAM_PROJECT: 'chosen' }).stdout, '')
 }))
 
+
+test('inspector uses physical cwd and ignores diagnostics, but fails on uncertainty', () => fixture(({ home, one, env }) => {
+  const bin = join(home, 'bin')
+  mkdirSync(bin)
+  const fake = join(bin, 'engram')
+  const fakeEnv = { ...env, PATH: `${bin}:${env.PATH}` }
+  const script = (body) => { writeFileSync(fake, `#!/bin/sh\n${body}\n`); chmodSync(fake, 0o755) }
+  script(`test "$1 $2" = "hook resolve-hook-project" || exit 10
+input=$(cat)
+test "$input" = '{"cwd":"${realpathSync(one)}"}' || exit 11
+printf 'diagnostic: filesystem boundary reached\n' >&2
+printf '{"project_source":"dir_basename","project":"one"}'`)
+  assert.equal(getProject(one, fakeEnv), 'arthur')
+  const alias = join(home, '.t3/scratch/alias')
+  symlinkSync(one, alias)
+  assert.equal(getProject(alias, fakeEnv), 'arthur')
+  script("printf '{}'")
+  assert.equal(getProject(one, fakeEnv), null)
+  script("printf '{\"project_source\":\"git_remote\",\"project\":\"repo\"}'")
+  assert.equal(getProject(one, fakeEnv), null)
+  script("printf '{\"project_source\":\"dir_basename\",\"project\":\" \"}'")
+  assert.equal(getProject(one, fakeEnv), null)
+  script("printf 'not json'; echo 'bad inspector output' >&2")
+  assert.throws(() => getProject(one, fakeEnv), /invalid JSON.*bad inspector output/)
+  script("echo 'inspector failed' >&2; exit 17")
+  assert.throws(() => getProject(one, fakeEnv), /inspector failed/)
+  const cli = spawnSync(process.execPath, [helper], { cwd: one, env: fakeEnv, encoding: 'utf8' })
+  assert.notEqual(cli.status, 0)
+  assert.equal(cli.stdout, '')
+  assert.match(cli.stderr, /inspector failed/)
+}))
+
 test('launcher forwards args, stdin, exit status and environment without protocol noise', () => fixture(({ home, one, env }) => {
   const bin = join(home, 'bin')
   mkdirSync(bin)
   const fake = join(bin, 'engram')
-  writeFileSync(fake, '#!/bin/sh\nprintf "ARGS:%s\\n" "$*"\nprintf "PROJECT:%s\\n" "${ENGRAM_PROJECT-unset}"\ncat\nexit 23\n')
+  writeFileSync(fake, '#!/bin/sh\nif [ "$1 $2" = "hook resolve-hook-project" ]; then\n  cat >/dev/null\n  printf \'{"project_source":"dir_basename","project":"one"}\'\n  exit 0\nfi\nprintf "ARGS:%s\\n" "$*"\nprintf "PROJECT:%s\\n" "${ENGRAM_PROJECT-unset}"\ncat\nexit 23\n')
   chmodSync(fake, 0o755)
   const run = (extra = {}) => spawnSync(launcher, ['--tools=agent', '--project', 'explicit'], {
     cwd: one, env: { ...env, PATH: `${bin}:${env.PATH}`, ...extra }, input: 'protocol input\n', encoding: 'utf8',

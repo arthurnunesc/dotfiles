@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test"
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs"
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -108,8 +108,11 @@ describe("Engram OpenCode V2 session binding", () => {
 		try {
 			process.env.T3CODE_HOME = fixture
 			delete process.env.ENGRAM_PROJECT
-			const directory = join(fixture, "scratch", "chat-one")
-			mkdirSync(directory, { recursive: true })
+			const physicalDirectory = join(fixture, "scratch", "chat-one")
+			mkdirSync(physicalDirectory, { recursive: true })
+			const directory = join(fixture, "scratch", "chat-alias")
+			symlinkSync(physicalDirectory, directory)
+			const storedDirectory = realpathSync(directory)
 			const requests: Array<{ path: string; body?: any }> = []
 			globalThis.fetch = (async (input, init) => {
 				const path = String(input)
@@ -118,29 +121,45 @@ describe("Engram OpenCode V2 session binding", () => {
 				if (path.endsWith("/health")) return response(200, { ok: true })
 				if (path.includes("/project/current?cwd=")) return response(200, { project: "chat-one" })
 				if (path.endsWith("/sessions")) return response(200, { id: body.id })
-				if (path.endsWith("/sessions/scratch-root")) return response(200, { id: "scratch-root", project: "arthur", directory })
+				if (path.endsWith("/sessions/scratch-root")) return response(200, { id: "scratch-root", project: "arthur", directory: storedDirectory })
 				if (path.includes("/context?project=")) return response(200, { context: "prior memory" })
 				return response(200, {})
 			}) as typeof fetch
-			harness = createHarness({ fetch: globalThis.fetch, directory })
+			harness = createHarness({ fetch: globalThis.fetch, directory, sessions: {
+				child: { parentID: "scratch-root" },
+				grandchild: { parentID: "child" },
+				missing: "missing",
+				"cycle-a": { parentID: "cycle-b" },
+				"cycle-b": { parentID: "cycle-a" },
+			} })
 			cleanup = await Engram.setup(harness.ctx as never)
 			await harness.sessionHooks.get("prompt")?.({ sessionID: "scratch-root", prompt: { text: "A disposable scratch message" } })
 			const compaction = { sessionID: "scratch-root", system: [] as Array<{ type: string; text: string }> }
 			await harness.sessionHooks.get("compaction")?.(compaction)
 			expect(requests.find((request) => request.path.endsWith("/sessions"))?.body).toMatchObject({
-				id: "scratch-root", project: "arthur", directory,
+				id: "scratch-root", project: "arthur", directory: storedDirectory,
 			})
 			expect(requests.find((request) => request.path.endsWith("/prompts"))?.body.project).toBe("arthur")
 			expect(requests.some((request) => request.path.endsWith("/context?project=arthur"))).toBe(true)
 			expect(requests.some((request) => request.path.includes("/project/current?cwd="))).toBe(false)
 			expect(compaction.system.at(-1)?.text).toContain("project: 'arthur'")
 			let writes = 0
-			const writer: RegisteredTool = { id: "engram_mem_save", execute: async () => { writes++; return "saved" } }
+			const inputs: Record<string, unknown>[] = []
+			const writer: RegisteredTool = { id: "engram_mem_save", execute: async (input) => { writes++; inputs.push(input); return "saved" } }
 			harness.applyTransforms([writer])
 			const executor = { sessionID: "scratch-root", signal: new AbortController().signal }
-			await expect(writer.execute({ session_id: "different-old-root" }, executor)).rejects.toThrow("invoking root session")
+			await expect(writer.execute({ session_id: "different-old-root" }, executor)).rejects.toThrow("invoking root")
 			expect(writes).toBe(0)
 			await expect(writer.execute({ session_id: "scratch-root" }, executor)).resolves.toBe("saved")
+			await expect(writer.execute({ session_id: "scratch-root", project: "preciodelalquiler" }, { ...executor, sessionID: "child" })).resolves.toBe("saved")
+			expect(inputs.at(-1)?.project).toBe("preciodelalquiler")
+			await expect(writer.execute({ session_id: "scratch-root" }, { ...executor, sessionID: "grandchild" })).resolves.toBe("saved")
+			for (const sessionID of ["missing", "cycle-a", "unrelated-root"]) {
+				await expect(writer.execute({ session_id: "scratch-root" }, { ...executor, sessionID })).rejects.toThrow("invoking root")
+			}
+			await expect(writer.execute({}, { ...executor, sessionID: "child" })).rejects.toThrow("invoking root")
+			await expect(writer.execute({ session_id: "child" }, { ...executor, sessionID: "child" })).rejects.toThrow("invoking root")
+			expect(writes).toBe(3)
 		} finally {
 			if (harness) await harness.stop(cleanup)
 			if (previousT3Home === undefined) delete process.env.T3CODE_HOME
@@ -170,13 +189,14 @@ describe("Engram OpenCode V2 session binding", () => {
 				if (path.endsWith("/sessions/old-root")) return response(200, { id: "old-root", project: "chat-old", directory })
 				return response(200, {})
 			}) as typeof fetch
-			harness = createHarness({ fetch: globalThis.fetch, directory })
+			harness = createHarness({ fetch: globalThis.fetch, directory, sessions: { "stale-child": { parentID: "old-root" } } })
 			cleanup = await Engram.setup(harness.ctx as never)
 			let writes = 0
 			const writer: RegisteredTool = { id: "engram_mem_save", execute: async () => { writes++; return "saved" } }
 			harness.applyTransforms([writer])
 			await expect(writer.execute({}, { sessionID: "old-root", signal: new AbortController().signal })).rejects.toThrow("could not bind")
 			await expect(writer.execute({ session_id: "old-root" }, { sessionID: "old-root", signal: new AbortController().signal })).rejects.toThrow("could not bind")
+			await expect(writer.execute({ session_id: "old-root" }, { sessionID: "stale-child", signal: new AbortController().signal })).rejects.toThrow("could not bind")
 			expect(writes).toBe(0)
 			expect(requests.some((path) => path.endsWith("/sessions"))).toBe(false)
 			expect(requests.some((path) => path.includes("/projects/"))).toBe(false)
