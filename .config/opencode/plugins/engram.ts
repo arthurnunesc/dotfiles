@@ -15,6 +15,8 @@
  */
 
 import { Plugin } from "@opencode/plugin"
+import { realpathSync } from "node:fs"
+import { getT3ScratchDefaultProject } from "../../engram/t3-project.mjs"
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 
@@ -240,6 +242,20 @@ export const Engram = Plugin.define({
 		}
 	}
 
+	async function isAncestorRoot(sessionId: string, rootId: string): Promise<boolean> {
+		const seen = new Set<string>()
+		while (sessionId && !seen.has(sessionId)) {
+			if (sessionId === rootId) return isRootSession(rootId)
+			seen.add(sessionId)
+			try {
+				const session = await ctx.session.get({ sessionID: sessionId })
+				if (session.id !== sessionId) return false
+				sessionId = session.parentID ?? ""
+			} catch { return false }
+		}
+		return false
+	}
+
   /**
    * Ensure a session exists in engram. Idempotent — calls POST /sessions
    * which uses INSERT OR IGNORE. Safe to call multiple times.
@@ -254,11 +270,21 @@ export const Engram = Plugin.define({
 		if (inFlight) return inFlight
 
 		const registration = (async () => {
+			const sessionPath = `/sessions/${encodeURIComponent(sessionId)}`
+			if (scratchProject) {
+				const existing = await engramFetch(sessionPath)
+				if (existing && (existing.project !== project || existing.directory !== sessionDirectory)) return false
+			}
 			const result = await engramFetch("/sessions", {
 				method: "POST",
-				body: { id: sessionId, project, directory },
+				body: { id: sessionId, project, directory: sessionDirectory },
 			})
 			if (result?.id !== sessionId) return false
+			// Registration can preserve an older row. Never claim that it changed owners.
+			if (scratchProject) {
+				const stored = await engramFetch(sessionPath)
+				if (stored?.project !== project || stored.directory !== sessionDirectory) return false
+			}
 			knownSessions.add(sessionId)
 			return true
 		})().finally(() => registeringSessions.delete(sessionId))
@@ -283,7 +309,11 @@ export const Engram = Plugin.define({
 
   // The core resolver reads .engram/config.json and shared identity. Do not
   // infer ownership from Git remotes or migrate project rows from this plugin.
-	const project = await resolveProjectName(directory)
+	// Keep HTTP session registration aligned with the scratch-aware MCP launcher.
+	const scratchProject = getT3ScratchDefaultProject(directory)
+	const sessionDirectory = scratchProject ? realpathSync(directory) : directory
+	// A shared HTTP server may have a different environment from this client.
+	const project = process.env.ENGRAM_PROJECT?.trim() || scratchProject || await resolveProjectName(directory)
 
   // Auto-import: if .engram/manifest.json exists in the project repo,
   // run `engram sync --import` to load any new chunks into the local DB.
@@ -382,14 +412,18 @@ export const Engram = Plugin.define({
 				const originalExecute = tool.execute
 				if (boundWriterExecutors.has(originalExecute)) return
 				const execute = async (input: Parameters<typeof originalExecute>[0], executorContext: Parameters<typeof originalExecute>[1]) => {
-					if (Object.hasOwn(input, "session_id")) return originalExecute(input, executorContext)
-					if (!await ensureSession(executorContext.sessionID)) {
+					const needsSessionId = !Object.hasOwn(input, "session_id")
+					const targetSessionId = needsSessionId ? executorContext.sessionID : input.session_id
+					if (scratchProject && (typeof targetSessionId !== "string" || !await isAncestorRoot(executorContext.sessionID, targetSessionId))) {
+						throw new Error("Engram scratch writers must use their invoking root or a verified ancestor root session.")
+					}
+					if ((needsSessionId || scratchProject) && !await ensureSession(targetSessionId as string)) {
 						throw new Error(
 							"Engram could not bind this writer call to a registered OpenCode root session. " +
 							"Do not invent a session_id; report the learning to your parent session."
 						)
 					}
-					return originalExecute({ ...input, session_id: executorContext.sessionID }, executorContext)
+					return originalExecute(needsSessionId ? { ...input, session_id: executorContext.sessionID } : input, executorContext)
 				}
 				boundWriterExecutors.add(execute)
 				tool.execute = execute
