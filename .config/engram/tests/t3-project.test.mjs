@@ -24,8 +24,8 @@ function fixture(fn) {
 }
 
 test('only physical strict descendants of the configured scratch root qualify', () => fixture(({ home, scratch, one, two, env }) => {
-  assert.equal(getProject(one, env), 'arthur')
-  assert.equal(getProject(two, env), 'arthur')
+  assert.equal(getProject(one, env), 'general')
+  assert.equal(getProject(two, env), 'general')
   assert.equal(getProject(scratch, env), null)
   assert.equal(getProject(home, env), null)
   const sibling = `${scratch}-sibling`
@@ -39,16 +39,16 @@ test('only physical strict descendants of the configured scratch root qualify', 
   assert.equal(getProject(join(scratch, 'escape'), env), null)
   const custom = join(home, 'custom')
   mkdirSync(join(custom, 'scratch', 'child'), { recursive: true })
-  assert.equal(getProject(join(custom, 'scratch', 'child'), { ...env, T3CODE_HOME: custom }), 'arthur')
+  assert.equal(getProject(join(custom, 'scratch', 'child'), { ...env, T3CODE_HOME: custom }), 'general')
   assert.equal(getProject(one, { ...env, T3CODE_HOME: 'relative' }), null)
   assert.equal(getProject(one, { ...env, T3CODE_HOME: '  ' }), null)
   assert.equal(getProject(one, { ...env, T3CODE_HOME: '' }), null)
-  assert.equal(getProject(one, { ...env, GIT_TRACE: '1' }), 'arthur')
+  assert.equal(getProject(one, { ...env, GIT_TRACE: '1' }), 'general')
 }))
 
 test('preserves inherited project, local config and Git markers', () => fixture(({ home, one, two, env }) => {
   assert.equal(getProject(one, { ...env, ENGRAM_PROJECT: ' other ' }), null)
-  assert.equal(getProject(one, { ...env, ENGRAM_PROJECT: '  ' }), 'arthur')
+  assert.equal(getProject(one, { ...env, ENGRAM_PROJECT: '  ' }), 'general')
   mkdirSync(join(one, '.engram'))
   writeFileSync(join(one, '.engram/config.json'), 'invalid json')
   assert.equal(getProject(one, env), null)
@@ -78,7 +78,7 @@ test('inspector failure is closed and CLI emits only the optional project', () =
   const run = (cwd, extra = {}) => spawnSync(process.execPath, [helper], { cwd, env: { ...env, ...extra }, encoding: 'utf8' })
   const selected = run(one)
   assert.equal(selected.status, 0)
-  assert.equal(selected.stdout, 'arthur')
+  assert.equal(selected.stdout, 'general')
   assert.equal(selected.stderr, '')
   assert.equal(run(home).stdout, '')
   assert.equal(run(one, { ENGRAM_PROJECT: 'chosen' }).stdout, '')
@@ -96,10 +96,10 @@ input=$(cat)
 test "$input" = '{"cwd":"${realpathSync(one)}"}' || exit 11
 printf 'diagnostic: filesystem boundary reached\n' >&2
 printf '{"project_source":"dir_basename","project":"one"}'`)
-  assert.equal(getProject(one, fakeEnv), 'arthur')
+  assert.equal(getProject(one, fakeEnv), 'general')
   const alias = join(home, '.t3/scratch/alias')
   symlinkSync(one, alias)
-  assert.equal(getProject(alias, fakeEnv), 'arthur')
+  assert.equal(getProject(alias, fakeEnv), 'general')
   script("printf '{}'")
   assert.equal(getProject(one, fakeEnv), null)
   script("printf '{\"project_source\":\"git_remote\",\"project\":\"repo\"}'")
@@ -127,7 +127,7 @@ test('launcher forwards args, stdin, exit status and environment without protoco
   })
   const result = run()
   assert.equal(result.status, 23)
-  assert.equal(result.stdout, 'ARGS:mcp --tools=agent --project explicit\nPROJECT:arthur\nprotocol input\n')
+  assert.equal(result.stdout, 'ARGS:mcp --tools=agent --project explicit\nPROJECT:general\nprotocol input\n')
   assert.equal(result.stderr, '')
   assert.match(run({ ENGRAM_PROJECT: 'chosen' }).stdout, /PROJECT:chosen/)
   const help = spawnSync(launcher, ['--help'], { cwd: one, env: { PATH: '' }, encoding: 'utf8' })

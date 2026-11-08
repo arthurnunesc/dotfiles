@@ -121,7 +121,7 @@ describe("Engram OpenCode V2 session binding", () => {
 				if (path.endsWith("/health")) return response(200, { ok: true })
 				if (path.includes("/project/current?cwd=")) return response(200, { project: "chat-one" })
 				if (path.endsWith("/sessions")) return response(200, { id: body.id })
-				if (path.endsWith("/sessions/scratch-root")) return response(200, { id: "scratch-root", project: "arthur", directory: storedDirectory })
+				if (path.endsWith("/sessions/scratch-root")) return response(200, { id: "scratch-root", project: "general", directory: storedDirectory })
 				if (path.includes("/context?project=")) return response(200, { context: "prior memory" })
 				return response(200, {})
 			}) as typeof fetch
@@ -137,12 +137,12 @@ describe("Engram OpenCode V2 session binding", () => {
 			const compaction = { sessionID: "scratch-root", system: [] as Array<{ type: string; text: string }> }
 			await harness.sessionHooks.get("compaction")?.(compaction)
 			expect(requests.find((request) => request.path.endsWith("/sessions"))?.body).toMatchObject({
-				id: "scratch-root", project: "arthur", directory: storedDirectory,
+				id: "scratch-root", project: "general", directory: storedDirectory,
 			})
-			expect(requests.find((request) => request.path.endsWith("/prompts"))?.body.project).toBe("arthur")
-			expect(requests.some((request) => request.path.endsWith("/context?project=arthur"))).toBe(true)
+			expect(requests.find((request) => request.path.endsWith("/prompts"))?.body.project).toBe("general")
+			expect(requests.some((request) => request.path.endsWith("/context?project=general"))).toBe(true)
 			expect(requests.some((request) => request.path.includes("/project/current?cwd="))).toBe(false)
-			expect(compaction.system.at(-1)?.text).toContain("project: 'arthur'")
+			expect(compaction.system.at(-1)?.text).toContain("project: 'general'")
 			let writes = 0
 			const inputs: Record<string, unknown>[] = []
 			const writer: RegisteredTool = { id: "engram_mem_save", execute: async (input) => { writes++; inputs.push(input); return "saved" } }

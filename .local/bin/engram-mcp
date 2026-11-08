@@ -2,7 +2,7 @@
 # Keep --help local; all other arguments belong to engram mcp.
 if [ "$#" -eq 1 ] && [ "$1" = "--help" ]; then
   printf '%s\n' 'Usage: engram-mcp [engram mcp options]' '' \
-    'Launch Engram MCP. Non-Git T3 scratch directories default to project arthur' \
+    'Launch Engram MCP. Non-Git T3 scratch directories default to project general' \
     'unless ENGRAM_PROJECT or local .engram/config.json is set. Explicit project' \
     'parameters and native --project retain normal Engram precedence.' '' \
     'Examples:' '  engram-mcp --tools=agent' '  engram-mcp --project my-project'
@@ -19,7 +19,7 @@ script_dir=$(CDPATH= cd "$(dirname "$script")" && pwd -P) || { echo 'engram-mcp:
 helper=$script_dir/../../.config/engram/t3-project.mjs
 [ -f "$helper" ] || { echo "engram-mcp: helper not found: $helper" >&2; exit 1; }
 project=$(node "$helper") || exit $?
-if [ "$project" = arthur ]; then
+if [ "$project" = general ]; then
   ENGRAM_PROJECT=$project
   export ENGRAM_PROJECT
 elif [ -n "$project" ]; then

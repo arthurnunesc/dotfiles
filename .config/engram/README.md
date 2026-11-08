@@ -1,6 +1,6 @@
 # T3 scratch project default
 
-The `engram-mcp` launcher and the native OpenCode plugin use the same resolver. In a physical directory strictly below `~/.t3/scratch`, and without a nonblank inherited `ENGRAM_PROJECT`, they ask Engram’s read-only `hook resolve-hook-project` inspector to resolve the physical working directory. They default to `arthur` only when the inspector returns a nonempty project with source `dir_basename`. Git repositories, local config, and inconclusive results are left to Engram. The scratch root itself, paths outside it, and nonexistent paths do not qualify. Inspector errors fail closed; no human-readable Git messages are parsed. The inspector does not register sessions or write bindings.
+The `engram-mcp` launcher and the native OpenCode plugin use the same resolver. In a physical directory strictly below `~/.t3/scratch`, and without a nonblank inherited `ENGRAM_PROJECT`, they ask Engram’s read-only `hook resolve-hook-project` inspector to resolve the physical working directory. They default to `general` only when the inspector returns a nonempty project with source `dir_basename`. Git repositories, local config, and inconclusive results are left to Engram. The scratch root itself, paths outside it, and nonexistent paths do not qualify. Inspector errors fail closed; no human-readable Git messages are parsed. The inspector does not register sessions or write bindings.
 
 This is a fallback, not semantic routing. Explicit project parameters still use upstream Engram precedence; the launcher passes `--project` and all other MCP arguments through unchanged. It does not add an AGENTS rule or require a T3 fork. Existing memories are not migrated.
 
@@ -18,6 +18,6 @@ node --test .config/engram/tests/t3-project.test.mjs
 bun test ./.config/opencode/tests/engram-session-binding.test.ts
 ```
 
-This draft has not been deployed. It changes the Engram command in the OpenCode, Codex and Pi MCP configurations. Copying or checking these files out into your real home directory can activate configuration reloads; do not install only part of the change. No existing memory data is included or moved.
+Merging this integration does not deploy it. It changes the Engram command in the OpenCode, Codex and Pi MCP configurations. Copying or checking these files out into your real home directory can activate configuration reloads; do not install only part of the change. No existing memory data is included or moved.
 
-Before deployment approval, test fresh no-project chats through all three T3 providers with isolated memory data: the default must be `arthur`, an explicit known project must remain usable, and a repository chat must retain its repository default. Also verify that an old OpenCode scratch session cannot silently keep writing under its previous owner. The current prototype and unit checks are not live-provider acceptance.
+Before deployment approval, test fresh no-project chats through all three T3 providers with isolated memory data: the default must be `general`, an explicit known project must remain usable, and a repository chat must retain its repository default. Also verify that an old OpenCode scratch session cannot silently keep writing under its previous owner. The current prototype and unit checks are not live-provider acceptance.

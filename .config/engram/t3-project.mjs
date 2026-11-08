@@ -34,7 +34,7 @@ export function getT3ScratchDefaultProject(directory, env = process.env) {
     throw new Error(`Cannot inspect Engram project for ${cwd}: invalid JSON from engram${result.stderr?.trim() ? `: ${result.stderr.trim()}` : ''}`)
   }
   return resolution?.project_source === 'dir_basename' &&
-    typeof resolution.project === 'string' && resolution.project.trim() ? 'arthur' : null
+    typeof resolution.project === 'string' && resolution.project.trim() ? 'general' : null
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
