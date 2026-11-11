@@ -13,6 +13,10 @@
 - Reply in the user's language.
 - For English prose, follow ASD-STE100 (Simplified Technical English).
 - Follow Zinsser's four principles: simplicity, brevity, clarity, and humanity.
+- Lead with the answer or result. No preamble, no closing recap.
+- Keep replies short by default. Add detail only when asked or when it changes a decision.
+- State things directly. No metaphor or flourish.
+- Do not narrate routine tool calls, routing, or delegation.
 
 ## Tooling
 
