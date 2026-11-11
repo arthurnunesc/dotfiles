@@ -417,10 +417,17 @@ export const Engram = Plugin.define({
 					if (scratchProject && (typeof targetSessionId !== "string" || !await isAncestorRoot(executorContext.sessionID, targetSessionId))) {
 						throw new Error("Engram scratch writers must use their invoking root or a verified ancestor root session.")
 					}
+					// Without a resolved project (for example, a directory with several repositories),
+					// pass the call through unchanged. Engram then fails closed with ambiguous_project
+					// and returns its own recovery flow, instead of this plugin rejecting every save.
+					if (needsSessionId && !project) return originalExecute(input, executorContext)
 					if ((needsSessionId || scratchProject) && !await ensureSession(targetSessionId as string)) {
 						throw new Error(
-							"Engram could not bind this writer call to a registered OpenCode root session. " +
-							"Do not invent a session_id; report the learning to your parent session."
+							subAgentSessions.has(targetSessionId as string)
+								? "Engram could not bind this writer call: sub-agent sessions are not registered with Engram. " +
+									"Do not invent a session_id; report the learning to your parent session."
+								: `Engram could not bind this writer call: registration of OpenCode root session ${targetSessionId} failed ` +
+									`(check that engram serve is reachable at ${ENGRAM_URL}). Do not invent a session_id.`
 						)
 					}
 					return originalExecute(needsSessionId ? { ...input, session_id: executorContext.sessionID } : input, executorContext)

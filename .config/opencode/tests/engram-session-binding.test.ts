@@ -347,6 +347,61 @@ describe("Engram OpenCode V2 session binding", () => {
 		await harness.stop(cleanup)
 	})
 
+	test("passes writers through to Engram's ambiguous_project recovery when no project resolves", async () => {
+		const previousProject = process.env.ENGRAM_PROJECT
+		let harness: ReturnType<typeof createHarness> | undefined
+		let cleanup: (() => Promise<void> | void) | void = undefined
+		try {
+			delete process.env.ENGRAM_PROJECT
+			const requests: string[] = []
+			globalThis.fetch = (async (input) => {
+				const path = String(input)
+				requests.push(path)
+				if (path.endsWith("/health")) return response(200, { ok: true })
+				if (path.includes("/project/current?cwd=")) {
+					return response(200, { project: "", project_source: "ambiguous", error_hint: "ambiguous project: multiple git repos found in cwd" })
+				}
+				return response(200, {})
+			}) as typeof fetch
+			harness = createHarness({ fetch: globalThis.fetch, directory: "/workspace", sessions: { child: { parentID: "root" } } })
+			cleanup = await Engram.setup(harness.ctx as never)
+			const inputs: Record<string, unknown>[] = []
+			const writer: RegisteredTool = { id: "engram_mem_save", execute: async (input) => { inputs.push(input); return "engram-response" } }
+			harness.applyTransforms([writer])
+			const signal = new AbortController().signal
+			const recovery = { title: "A", project: "repo-a", project_choice_reason: "user_selected_after_ambiguous_project", recovery_token: "t" }
+			await expect(writer.execute({ title: "A" }, { sessionID: "root", signal })).resolves.toBe("engram-response")
+			await expect(writer.execute(recovery, { sessionID: "root", signal })).resolves.toBe("engram-response")
+			await expect(writer.execute({ title: "A" }, { sessionID: "child", signal })).resolves.toBe("engram-response")
+			expect(inputs[0]).toEqual({ title: "A" })
+			expect(inputs[1]).toEqual(recovery)
+			expect(inputs.every((input) => !Object.hasOwn(input, "session_id"))).toBe(true)
+			expect(requests.some((path) => path.endsWith("/sessions"))).toBe(false)
+		} finally {
+			if (harness) await harness.stop(cleanup)
+			if (previousProject === undefined) delete process.env.ENGRAM_PROJECT
+			else process.env.ENGRAM_PROJECT = previousProject
+		}
+	})
+
+	test("names the failure reason when a writer cannot bind", async () => {
+		globalThis.fetch = (async (input) => {
+			const path = String(input)
+			if (path.endsWith("/health")) return response(200, { ok: true })
+			if (path.includes("/project/current?cwd=")) return response(200, { project: "preciodelalquiler" })
+			if (path.endsWith("/sessions")) return response(503, { error: "unavailable" })
+			return response(200, {})
+		}) as typeof fetch
+		const harness = createHarness({ fetch: globalThis.fetch, sessions: { child: { parentID: "root" } } })
+		const cleanup = await Engram.setup(harness.ctx as never)
+		const writer: RegisteredTool = { id: "engram_mem_save", execute: async () => "saved" }
+		harness.applyTransforms([writer])
+		const signal = new AbortController().signal
+		await expect(writer.execute({}, { sessionID: "child", signal })).rejects.toThrow("sub-agent sessions are not registered")
+		await expect(writer.execute({}, { sessionID: "root", signal })).rejects.toThrow("registration of OpenCode root session root failed")
+		await harness.stop(cleanup)
+	})
+
 	test("adds the registered session ID to context and compaction instructions", async () => {
 		globalThis.fetch = (async (input, init) => {
 			const path = String(input)
