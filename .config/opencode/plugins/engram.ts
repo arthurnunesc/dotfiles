@@ -133,6 +133,13 @@ If you see a message about compaction or context reset, or if you see "FIRST ACT
 Do not skip step 1. Without it, everything done before compaction is lost from memory.
 `
 
+const SUB_AGENT_MEMORY_INSTRUCTIONS = `## Engram Persistent Memory — Sub-agent
+
+This is a sub-agent session. It is not registered with Engram, so writer tools (\`mem_save\`, \`mem_save_prompt\`, \`mem_session_summary\`, \`mem_capture_passive\`) fail here.
+Do not call them and do not invent a session_id, even if other instructions say saving is mandatory. Put durable learnings in your final report so the parent session can save them.
+You may still use \`mem_search\`, \`mem_context\` and \`mem_get_observation\` to read memory.
+`
+
 // ─── HTTP Client ─────────────────────────────────────────────────────────────
 
 async function engramFetch(
@@ -420,7 +427,9 @@ export const Engram = Plugin.define({
 					// Without a resolved project (for example, a directory with several repositories),
 					// pass the call through unchanged. Engram then fails closed with ambiguous_project
 					// and returns its own recovery flow, instead of this plugin rejecting every save.
-					if (needsSessionId && !project) return originalExecute(input, executorContext)
+					if (needsSessionId && !project && await isRootSession(executorContext.sessionID)) {
+						return originalExecute(input, executorContext)
+					}
 					if ((needsSessionId || scratchProject) && !await ensureSession(targetSessionId as string)) {
 						throw new Error(
 							subAgentSessions.has(targetSessionId as string)
@@ -439,9 +448,12 @@ export const Engram = Plugin.define({
 	})
 
 	await ctx.session.hook("context", async (event) => {
-		const instructions = await ensureSession(event.sessionID)
-			? boundSessionInstructions(event.sessionID)
-			: MEMORY_INSTRUCTIONS
+		// Sub-agent writers always fail closed, so do not tell sub-agents to call them.
+		const instructions = await isSubAgentSession(event.sessionID)
+			? SUB_AGENT_MEMORY_INSTRUCTIONS
+			: await ensureSession(event.sessionID)
+				? boundSessionInstructions(event.sessionID)
+				: MEMORY_INSTRUCTIONS
 		const last = event.system.at(-1)
 		if (last?.type === "text") {
 			event.system[event.system.length - 1] = {

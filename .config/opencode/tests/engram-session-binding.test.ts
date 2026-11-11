@@ -372,7 +372,8 @@ describe("Engram OpenCode V2 session binding", () => {
 			const recovery = { title: "A", project: "repo-a", project_choice_reason: "user_selected_after_ambiguous_project", recovery_token: "t" }
 			await expect(writer.execute({ title: "A" }, { sessionID: "root", signal })).resolves.toBe("engram-response")
 			await expect(writer.execute(recovery, { sessionID: "root", signal })).resolves.toBe("engram-response")
-			await expect(writer.execute({ title: "A" }, { sessionID: "child", signal })).resolves.toBe("engram-response")
+			await expect(writer.execute({ title: "A" }, { sessionID: "child", signal })).rejects.toThrow("sub-agent sessions are not registered")
+			expect(inputs).toHaveLength(2)
 			expect(inputs[0]).toEqual({ title: "A" })
 			expect(inputs[1]).toEqual(recovery)
 			expect(inputs.every((input) => !Object.hasOwn(input, "session_id"))).toBe(true)
@@ -399,6 +400,27 @@ describe("Engram OpenCode V2 session binding", () => {
 		const signal = new AbortController().signal
 		await expect(writer.execute({}, { sessionID: "child", signal })).rejects.toThrow("sub-agent sessions are not registered")
 		await expect(writer.execute({}, { sessionID: "root", signal })).rejects.toThrow("registration of OpenCode root session root failed")
+		await harness.stop(cleanup)
+	})
+
+	test("tells sub-agents not to call Engram writers instead of injecting mandatory saves", async () => {
+		globalThis.fetch = (async (input, init) => {
+			const path = String(input)
+			if (path.endsWith("/health")) return response(200, { ok: true })
+			if (path.includes("/project/current?cwd=")) return response(200, { project: "preciodelalquiler" })
+			if (path.endsWith("/sessions")) return response(200, { id: JSON.parse(String(init?.body)).id })
+			return response(200, {})
+		}) as typeof fetch
+		const harness = createHarness({ fetch: globalThis.fetch, sessions: { child: { parentID: "root" } } })
+		const cleanup = await Engram.setup(harness.ctx as never)
+		const child = { sessionID: "child", system: [] as Array<{ type: string; text: string }> }
+		await harness.sessionHooks.get("context")?.(child)
+		expect(child.system.at(-1)?.text).toContain("This is a sub-agent session")
+		expect(child.system.at(-1)?.text).not.toContain("WHEN TO SAVE")
+		const root = { sessionID: "root", system: [] as Array<{ type: string; text: string }> }
+		await harness.sessionHooks.get("context")?.(root)
+		expect(root.system.at(-1)?.text).toContain("WHEN TO SAVE")
+		expect(root.system.at(-1)?.text).toContain('session_id: "root"')
 		await harness.stop(cleanup)
 	})
 
