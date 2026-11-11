@@ -7,7 +7,6 @@
   "theme": "light",
   "hideThinkingBlock": false,
   "packages": [
-    "npm:gentle-engram@0.4.2",
     "npm:pi-mcp-adapter",
     "npm:@upstash/context7-pi",
     "npm:@ff-labs/pi-fff"
