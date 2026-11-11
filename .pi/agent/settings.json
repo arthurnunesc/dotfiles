@@ -1,17 +1,9 @@
 {
-  "lastChangelogVersion": "1.4.0",
+  "lastChangelogVersion": "1.5.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "enableInstallTelemetry": false,
   "theme": "light",
-  "hideThinkingBlock": false,
-  "packages": [
-    "npm:pi-mcp-adapter",
-    "npm:@upstash/context7-pi",
-    "npm:@ff-labs/pi-fff"
-  ],
-  "extensions": [
-    "-builtin:mcp"
-  ]
+  "hideThinkingBlock": false
 }
