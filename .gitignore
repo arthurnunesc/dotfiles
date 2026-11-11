@@ -35,6 +35,7 @@
 !.local/
 !.local/bin/
 !.local/bin/print-ai-cli-tools
+!.local/bin/engram-t3
 
 # Starship
 !.config/starship/
