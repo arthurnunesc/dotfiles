@@ -198,7 +198,8 @@
     },
     "engram" : {
       "command" : [
-        "engram-mcp",
+        "engram",
+        "mcp",
         "--tools=agent"
       ],
       "type" : "local"

@@ -40,7 +40,3 @@ Store global API keys in `~/.config/agent-secrets/secrets.env`, with directory p
 The shell hook loads keys only in new terminals. After pulling these dotfiles, transfer the private file manually over SSH; actual values are not included in the repository. User systemd drop-ins need activation. On Linux, copy the private file first, confirm no work is running, then restart only the `opencode-autostart` and `t3code` user units. On macOS, stop OpenCode and start it from a new terminal after the shell hook loads the key. Do not use a GUI/launchd environment importer: a GUI started before the terminal cannot receive the key.
 
 For rotation, update the private file and manually copy the new file to each machine, then restart the affected app or units. Native OAuth, SSH credentials, and project or production secrets are not copied by this setup.
-
-## Engram and T3 scratch
-
-See [the Engram scratch default](.config/engram/README.md) for the shared MCP launcher and native plugin behavior, requirements, and draft acceptance status.
