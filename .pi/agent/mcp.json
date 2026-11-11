@@ -11,7 +11,7 @@
         "mcp",
         "--tools=agent"
       ],
-      "command": "engram"
+      "command": "engram-t3"
     }
   }
 }
