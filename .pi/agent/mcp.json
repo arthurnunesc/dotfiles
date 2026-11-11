@@ -8,9 +8,10 @@
     },
     "engram": {
       "args": [
+        "mcp",
         "--tools=agent"
       ],
-      "command": "engram-mcp"
+      "command": "engram"
     }
   }
 }
