@@ -3,16 +3,16 @@
   "agents" : {
     "build" : {
       "description" : "Normal primary engineer and orchestrator. Owns dynamic routing, architecture, integration, and final validation.",
-      "model" : "openai/gpt-6.1-sol#medium"
+      "model" : "claude-agent/opus#medium"
     },
     "cheap-worker" : {
-      "model" : "openai/gpt-6-luna#high"
+      "model" : "claude-agent/haiku#high"
     },
     "explore" : {
       "description" : "Read-only, low-overhead codebase investigation. Finds files, symbols, call paths, behavior, and tests; returns concise evidence without architecture speculation.",
       "hidden" : false,
       "mode" : "subagent",
-      "model" : "openai/gpt-6-luna#medium",
+      "model" : "claude-agent/haiku#medium",
       "permissions" : [
         {
           "action" : "*",
@@ -70,11 +70,11 @@
       "description" : "Bounded implementation compatibility agent for existing workflows. Prefer standard-worker for new delegation.",
       "hidden" : true,
       "mode" : "subagent",
-      "model" : "openai/gpt-6.1-terra#high"
+      "model" : "claude-agent/sonnet#high"
     },
     "plan" : {
       "description" : "Optional analysis primary, selected explicitly by the user. Investigates and plans without implementation.",
-      "model" : "openai/gpt-6.1-sol#high",
+      "model" : "claude-agent/opus#high",
       "permissions" : [
         {
           "action" : "*",
@@ -154,7 +154,7 @@
       ]
     },
     "standard-worker" : {
-      "model" : "openai/gpt-6.1-terra#high"
+      "model" : "claude-agent/sonnet#high"
     }
   },
   "commands" : {
@@ -183,6 +183,11 @@
         "action" : "provider.use",
         "effect" : "allow",
         "resource" : "openai"
+      },
+      {
+        "action" : "provider.use",
+        "effect" : "allow",
+        "resource" : "claude-agent"
       }
     ]
   },
@@ -220,7 +225,7 @@
       }
     }
   },
-  "model" : "openai/gpt-6.1-sol",
+  "model" : "claude-agent/opus",
   "permission" : {
     "external_directory" : {
       "/tmp/**" : "allow",
