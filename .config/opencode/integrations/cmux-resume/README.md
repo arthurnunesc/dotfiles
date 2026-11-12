@@ -23,7 +23,6 @@ cmux server/feed plugin installed:
 {
   "plugins": [
     "-cmux.tui",
-    "opencode-subagent-statusline",
     "./integrations/cmux-resume"
   ]
 }

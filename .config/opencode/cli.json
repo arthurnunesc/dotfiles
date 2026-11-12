@@ -9,7 +9,6 @@
   },
   "plugins": [
     "-cmux.tui",
-    "./integrations/subagent-statusline",
     "./integrations/cmux-resume"
   ],
   "diffs": {
