@@ -3,16 +3,16 @@
   "agents" : {
     "build" : {
       "description" : "Normal primary engineer and orchestrator. Owns dynamic routing, architecture, integration, and final validation.",
-      "model" : "claude-agent/opus#medium"
+      "model" : "claude-agent/opus#high"
     },
     "cheap-worker" : {
-      "model" : "claude-agent/haiku#high"
+      "model" : "openai/gpt-6-luna#high"
     },
     "explore" : {
       "description" : "Read-only, low-overhead codebase investigation. Finds files, symbols, call paths, behavior, and tests; returns concise evidence without architecture speculation.",
       "hidden" : false,
       "mode" : "subagent",
-      "model" : "claude-agent/haiku#medium",
+      "model" : "openai/gpt-6-luna#medium",
       "permissions" : [
         {
           "action" : "*",
@@ -70,7 +70,7 @@
       "description" : "Bounded implementation compatibility agent for existing workflows. Prefer standard-worker for new delegation.",
       "hidden" : true,
       "mode" : "subagent",
-      "model" : "claude-agent/sonnet#high"
+      "model" : "openai/gpt-6.1-terra#high"
     },
     "plan" : {
       "description" : "Optional analysis primary, selected explicitly by the user. Investigates and plans without implementation.",
@@ -154,7 +154,7 @@
       ]
     },
     "standard-worker" : {
-      "model" : "claude-agent/sonnet#high"
+      "model" : "openai/gpt-6.1-terra#high"
     }
   },
   "commands" : {
