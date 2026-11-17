@@ -74,10 +74,6 @@ if [ $machine = "mac" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/arthur/.lmstudio/bin"
-# End of LM Studio CLI section
-
 # AI tools reminder
 alias '/exit'='exit'
 alias ai='print-ai-cli-tools'
