@@ -3,7 +3,7 @@
   "agents" : {
     "build" : {
       "description" : "Normal primary engineer and orchestrator. Owns dynamic routing, architecture, integration, and final validation.",
-      "model" : "claude-agent/opus#high"
+      "model" : "openai/gpt-6.2-sol#medium"
     },
     "cheap-worker" : {
       "model" : "openai/gpt-6-luna#high"
@@ -74,7 +74,7 @@
     },
     "plan" : {
       "description" : "Optional analysis primary, selected explicitly by the user. Investigates and plans without implementation.",
-      "model" : "claude-agent/opus#high",
+      "model" : "openai/gpt-6.2-sol#high",
       "permissions" : [
         {
           "action" : "*",
@@ -172,25 +172,6 @@
     }
   },
   "default_agent" : "build",
-  "experimental" : {
-    "policies" : [
-      {
-        "action" : "provider.use",
-        "effect" : "deny",
-        "resource" : "*"
-      },
-      {
-        "action" : "provider.use",
-        "effect" : "allow",
-        "resource" : "openai"
-      },
-      {
-        "action" : "provider.use",
-        "effect" : "allow",
-        "resource" : "claude-agent"
-      }
-    ]
-  },
   "mcp" : {
     "context7" : {
       "enabled" : true,
@@ -225,7 +206,7 @@
       }
     }
   },
-  "model" : "claude-agent/opus",
+  "model" : "openai/gpt-6.2-sol",
   "permission" : {
     "external_directory" : {
       "/tmp/**" : "allow",
@@ -235,10 +216,22 @@
   "plugin" : [
     "./plugins/cmux"
   ],
+  "policies" : [
+    {
+      "action" : "provider.use",
+      "effect" : "deny",
+      "resource" : "*"
+    },
+    {
+      "action" : "provider.use",
+      "effect" : "allow",
+      "resource" : "openai"
+    }
+  ],
   "providers" : {
     "openai" : {
       "models" : {
-        "gpt-6.1-sol" : {
+        "gpt-6.2-sol" : {
           "settings" : {
             "reasoningEffort" : "medium"
           }
