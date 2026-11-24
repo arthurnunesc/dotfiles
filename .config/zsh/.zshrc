@@ -60,7 +60,7 @@ fi
 # AI tools reminder
 alias '/exit'='exit'
 alias ai='print-ai-cli-tools'
-alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+alias git-dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME -c user.email=arthurnunesc@proton.me'
 alias code-dotfiles='GIT_DIR="$HOME/.dotfiles" GIT_WORK_TREE="$HOME" code --new-window --disable-extensions "$HOME/.dotfiles.code-workspace"'
 alias pi='env -u AWS_PROFILE pi'
 
