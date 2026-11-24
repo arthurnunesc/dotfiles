@@ -20,13 +20,14 @@
 !.config/agent-secrets/load.sh
 !.config/agent-secrets/secrets.env.example
 
-# Explicit user service drop-ins for agent key injection.
+# Explicit user service drop-ins.
 !.config/systemd/
 !.config/systemd/user/
 !.config/systemd/user/opencode-autostart.service.d/
 !.config/systemd/user/opencode-autostart.service.d/50-agent-secrets.conf
 !.config/systemd/user/t3code.service.d/
 !.config/systemd/user/t3code.service.d/50-agent-secrets.conf
+!.config/systemd/user/t3code.service.d/60-disable-telemetry.conf
 
 # Bash login profile
 !.bash_profile
