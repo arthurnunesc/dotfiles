@@ -7,11 +7,11 @@ setopt beep
 
 
 # Checks which OS we are in and sets the machine variable accordingly
-uname_out="$(uname -s)"
-case "${uname_out}" in
-  Linux*) machine=linux ;;
-  Darwin*) machine=mac ;;
-  *) machine="OTHER:${uname_out}" ;;
+# $OSTYPE is a zsh built-in, so no `uname` fork.
+case "$OSTYPE" in
+  linux*) machine=linux ;;
+  darwin*) machine=mac ;;
+  *) machine="OTHER:${OSTYPE}" ;;
 esac
 
 # Android Studio config
@@ -152,9 +152,11 @@ autoload -Uz _zinit
 ## End of Zinit installer chunk ##
 
 ## Installing plugins
-zinit light zsh-users/zsh-autosuggestions
-zinit light zdharma-continuum/fast-syntax-highlighting
-zinit ice depth=1
+# Turbo mode: plugins load right after the first prompt is drawn instead of before it.
+zinit wait lucid for \
+  atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+    zdharma-continuum/fast-syntax-highlighting
 ### ZINIT END ###
 
 
@@ -165,4 +167,11 @@ export VISUAL=nvim
 
 ### STARSHIP CONFIG ###
 export STARSHIP_CONFIG="$HOME"/.config/starship/starship.toml
-eval "$(starship init zsh)"
+# Cached `starship init zsh`: the output is static, and spawning starship costs up to ~0.7s here.
+# The cache is rebuilt whenever the starship binary is newer than it (i.e. after an upgrade).
+_starship_init="$ZDOTDIR/starship-init.zsh"
+if [[ ! -s "$_starship_init" || "${commands[starship]:A}" -nt "$_starship_init" ]]; then
+  starship init zsh --print-full-init > "$_starship_init"
+fi
+source "$_starship_init"
+unset _starship_init
