@@ -17,6 +17,19 @@
     "interceptTerminalOpenCommandInCmuxBrowser": false
   },
 
+  "shortcuts": {
+    "bindings": {
+      "nextSidebarTab": "cmd+opt+↓",
+      "prevSidebarTab": "cmd+opt+↑",
+      "nextSurface": "cmd+opt+→",
+      "prevSurface": "cmd+opt+←",
+      "focusRight": "cmd+ctrl+→",
+      "focusLeft": "cmd+ctrl+←",
+      "focusDown": "cmd+ctrl+↓",
+      "focusUp": "cmd+ctrl+↑"
+    }
+  },
+
   //   "app" : {
   //     "appearance" : "system",
   //     "appIcon" : "automatic",
