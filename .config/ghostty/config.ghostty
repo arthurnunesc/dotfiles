@@ -1,4 +1,4 @@
-theme = GitHub Light Default
+theme = dark:GitHub Dark Default,light:GitHub Light Default
 font-family = Iosevka Nerd Font
 font-size = 14
 keybind = super+alt+left=previous_tab
